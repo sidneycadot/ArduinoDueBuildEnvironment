@@ -4,32 +4,47 @@ set -e
 
 HERE=$PWD
 
+########################################
+
+BINUTILS_VERSION=2.24
+GCC_VERSION=4.8.2
+NEWLIB_VERSION=2.1.0
+
+########################################
+
 DOWNLOADS_DIR=$HERE/downloads
 ROOT_DIR=$HERE/root
 UNPACKED_SRC_DIRS=$HERE/unpacked-src
 BUILD_DIRS=$HERE/build
 
-BINUTILS_BUILD_DIR=$BUILD_DIRS/binutils-2.24
-BINUTILS_SOURCE_DIR=$UNPACKED_SRC_DIRS/binutils-2.24
+BINUTILS_SOURCE_DIR=$UNPACKED_SRC_DIRS/binutils-$BINUTILS_VERSION
+BINUTILS_BUILD_DIR=$BUILD_DIRS/binutils-$BINUTILS_VERSION
 
-GCC_BUILD_DIR=$BUILD_DIRS/gcc-4.8.2
-GCC_SOURCE_DIR=$UNPACKED_SRC_DIRS/gcc-4.8.2
+GCC_SOURCE_DIR=$UNPACKED_SRC_DIRS/gcc-$GCC_VERSION
+
+GCC_BOOTSTRAP_BUILD_DIR=$BUILD_DIRS/gcc-$GCC_VERSION-bootstrap
+GCC_FULL_BUILD_DIR=$BUILD_DIRS/gcc-$GCC_VERSION-full
+
+NEWLIB_SOURCE_DIR=$UNPACKED_SRC_DIRS/newlib-$NEWLIB_VERSION
+NEWLIB_BUILD_DIR=$BUILD_DIRS/newlib-$NEWLIB_VERSION
 
 TARGET=arm-none-eabi
 
-PROGRAM_PREFIX=sidney-
+PROGRAM_PREFIX=$TARGET-
 
-#############################
+MAKE_OPTS="-j8"
 
-echo "@@@ Removing stale directories ..."
+########################################
+
+echo "@@@ [all] removing stale directories ..."
 
 rm -rf $UNPACKED_SRC_DIRS
 rm -rf $BUILD_DIRS
 rm -rf $ROOT_DIR
 
-#############################
+########################################
 
-echo "@@@ Setting up fresh directories ..."
+echo "@@@ [all] setting up fresh directories ..."
 
 mkdir $UNPACKED_SRC_DIRS
 mkdir $BUILD_DIRS
@@ -39,22 +54,22 @@ if [ ! -d $DOWNLOADS_DIR ] ; then
     mkdir $DOWNLOADS_DIR
 fi
 
-#############################
+########################################
 
-echo "@@@ Fetching tarballs ..."
+echo "@@@ [all] fetching tarballs ..."
 
 cd $DOWNLOADS_DIR
 
 # Binutils
 
-if [ ! -f binutils-2.24.tar.bz2 ] ; then
-    wget http://ftp.gnu.org/gnu/binutils/binutils-2.24.tar.bz2
+if [ ! -f binutils-$BINUTILS_VERSION.tar.bz2 ] ; then
+    wget http://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.bz2
 fi
 
 # GCC and its dependencies
 
-if [ ! -f gcc-4.8.2.tar.bz2 ] ; then
-    wget ftp://ftp.gnu.org/gnu/gcc/gcc-4.8.2/gcc-4.8.2.tar.bz2
+if [ ! -f gcc-$GCC_VERSION.tar.bz2 ] ; then
+    wget ftp://ftp.gnu.org/gnu/gcc/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.bz2
 fi
 
 if [ ! -f gmp-5.1.3.tar.lz ] ; then
@@ -77,18 +92,23 @@ if [ ! -f cloog-0.18.1.tar.gz ] ; then
     wget ftp://gcc.gnu.org/pub/gcc/infrastructure/cloog-0.18.1.tar.gz
 fi
 
-# C libraries
+# GDB
 
-if [ ! -f cloog-0.18.1.tar.gz ] ; then
-    wget ftp://sourceware.org/pub/newlib/newlib-2.1.0.tar.gz
+if [ ! -f gdb-7.7.tar.bz2 ] ; then
+    wget http://ftp.gnu.org/gnu/gdb/gdb-7.7.tar.bz2
 fi
 
-if [ ! -f cloog-0.18.1.tar.gz ] ; then
+# C libraries
+
+if [ ! -f newlib-$NEWLIB_VERSION.tar.gz ] ; then
+    wget ftp://sourceware.org/pub/newlib/newlib-$NEWLIB_VERSION.tar.gz
+fi
+
+if [ ! -f uClibc-0.9.33.tar.xz ] ; then
     wget http://www.uclibc.org/downloads/uClibc-0.9.33.tar.xz
 fi
 
 # FreeRTOS
-
 
 # Flash utility
 
@@ -98,59 +118,123 @@ echo
 md5sum *
 echo
 
-############################# Build binutils
+######################################## build binutils
 
 echo "@@@ [binutils] unpacking ..."
 
 cd $UNPACKED_SRC_DIRS
 
-tar xf $DOWNLOADS_DIR/binutils-2.24.tar.bz2
+tar xf $DOWNLOADS_DIR/binutils-$BINUTILS_VERSION.tar.bz2
 
 echo "@@@ [binutils] Emitting configure help ..."
 
-$BINUTILS_SOURCE_DIR/configure --help > ConfigureHelp_binutils.txt
+$BINUTILS_SOURCE_DIR/configure --help > $HERE/ConfigureHelp_binutils.txt
 
 echo "@@@ [binutils] Creating build directory ..."
 
 mkdir $BINUTILS_BUILD_DIR
-cd $BINUTILS_BUILD_DIR
 
 echo "@@@ [binutils] configuring ..."
 
-$BINUTILS_SOURCE_DIR/configure --prefix=$HERE/root --program-prefix=$PROGRAM_PREFIX --target=$TARGET
+cd $BINUTILS_BUILD_DIR
+$BINUTILS_SOURCE_DIR/configure --prefix=$ROOT_DIR --program-prefix=$PROGRAM_PREFIX $CONFIG_OPTS_EXTRA --target=$TARGET
 
 echo "@@@ [binutils] making ..."
 
-make -j8
+make $MAKE_OPTS
 
 echo "@@@ [binutils] installing ..."
 
 make install
 
-############################# Build gcc
+######################################## build gcc/bootstrap
 
-echo "@@@ [gcc] unpacking ..."
+# Note that building the toolchain depends on the availability of a toolchain.
+# In essence, what we do is this:
+#
+# (1) Build the gcc compiler partially (good enough to be able to build newlib)
+# (2) Build newlib using the cross compiler
+# (3) Finish building GCC
+
+echo "@@@ [gcc/bootstrap] unpacking GCC ..."
 
 cd $UNPACKED_SRC_DIRS
 
-tar xf $DOWNLOADS_DIR/gcc-4.8.2.tar.bz2
+tar xf $DOWNLOADS_DIR/gcc-$GCC_VERSION.tar.bz2
 
-echo "@@@ [gcc] Emitting configure help ..."
+tar xf $DOWNLOADS_DIR/newlib-$NEWLIB_VERSION.tar.gz
 
-$GCC_SOURCE_DIR/configure --help > ConfigureHelp_gcc.txt
+echo "@@@ [gcc/bootstrap] emitting configure help ..."
 
-echo "@@@ [gcc] Creating build directory ..."
+$GCC_SOURCE_DIR/configure --help > $HERE/ConfigureHelp_gcc.txt
 
-mkdir $GCC_BUILD_DIR
-cd $GCC_BUILD_DIR
+echo "@@@ [gcc/bootstrap] creating build directory ..."
 
-echo "@@@ [gcc] configuring ..."
+mkdir $GCC_BOOTSTRAP_BUILD_DIR
 
-$GCC_SOURCE_DIR/configure --prefix=$HERE/root --program-prefix=$PROGRAM_PREFIX --enable-languages=c --target=$TARGET
+echo "@@@ [gcc/bootstrap] configuring ..."
 
-echo "@@@ [gcc] making ..."
+cd $GCC_BOOTSTRAP_BUILD_DIR
+$GCC_SOURCE_DIR/configure  --target=$TARGET --prefix=$ROOT_DIR --program-prefix=$PROGRAM_PREFIX --enable-languages=c,c++ --without-headers --with-newlib --with-gnu-as --with-gnu-ld
 
-make -j8
+echo "@@@ [gcc/bootstrap] making bootstrap compiler..."
 
-echo "@@@ [gcc] installing ..."
+make $MAKE_OPTS all-gcc
+
+echo "@@@ [gcc/bootstrap] installing bootstrap compiler..."
+
+make install-gcc
+
+######################################## build newlib
+
+echo "@@@ [newlib] unpacking NEWLIB ..."
+
+cd $UNPACKED_SRC_DIRS
+
+tar xf $DOWNLOADS_DIR/newlib-$NEWLIB_VERSION.tar.gz
+
+echo "@@@ [newlib] Emitting configure help ..."
+
+$NEWLIB_SOURCE_DIR/configure --help > $HERE/ConfigureHelp_newlib.txt
+
+echo "@@@ [newlib] Creating build directory ..."
+
+mkdir $NEWLIB_BUILD_DIR
+
+echo "@@@ [newlib] configuring ..."
+
+# Note that we add to PATH, to make sure that the configure scripts finds the just-installed GCC compiler.
+export PATH=$ROOT_DIR/bin:$PATH
+
+cd $NEWLIB_BUILD_DIR
+$NEWLIB_SOURCE_DIR/configure --target=$TARGET --prefix=$ROOT_DIR
+
+echo "@@@ [newlib] making ..."
+
+make all $MAKE_OPTS
+
+echo "@@@ [newlib] installing ..."
+
 make install
+
+######################################## build gcc/full
+
+echo "@@@ [gcc/full] creating build directory ..."
+
+mkdir $GCC_FULL_BUILD_DIR
+
+echo "@@@ [gcc/full] configuring ..."
+
+cd $GCC_FULL_BUILD_DIR
+$GCC_SOURCE_DIR/configure --target=$TARGET --prefix=$ROOT_DIR --program-prefix=$PROGRAM_PREFIX --enable-languages=c,c++ --with-newlib --with-gnu-as --with-gnu-ld --disable-shared --disable-libssp
+
+echo "@@@ [gcc/full] making full compiler..."
+
+make $MAKE_OPTS all
+
+echo "@@@ [gcc/full] installing full compiler..."
+
+make install
+
+echo
+echo "ALL DONE!!!"

@@ -2,3 +2,7 @@ downloads
 unpacked-src
 build
 root
+
+ConfigureHelp_binutils.txt
+ConfigureHelp_gcc.txt
+ConfigureHelp_newlib.txt
