@@ -2,6 +2,8 @@
 GOALS
 =====
 
+The Arduino Due is a small formfactor embedded computer built around the Atmelk AT91SAM3X8E (ARM Cortex-M3) processor.
+
 (1) A working cross-compiler GCC build environment for the ARM-based Arduino Due.
 (2) A working newlib, uclib, or other small C library\
 (3) The appropriate CMSIS stuff for the ARM chip
@@ -22,6 +24,8 @@ Current versions (March 2014):
 * CLoog ......... 0.18.1     ftp://gcc.gnu.org/pub/gcc/infrastructure/cloog-0.18.1.tar.gz
 * NewLib ........ 2.1.0      ftp://sourceware.org/pub/newlib/newlib-2.1.0.tar.gz               http://sourceware.org/newlib/
 * uClibc ........ 0.9.33     http://www.uclibc.org/downloads/uClibc-0.9.33.tar.xz              http://www.uclibc.org/
+* CMSIS
+
 Installing GCC
 --------------
 
