@@ -28,10 +28,11 @@ Current versions (March 2014):
 * CMSIS .........................
 * STL ...........................
 * Atmel Software Framework ...... 3.15       http://www.atmel.com/images/asf-standalone-archive-3.15.0.87.zip
-* GDB ........................... 7.7
+* GDB ........................... 7.7        http://ftp.gnu.org/gnu/gdb/gdb-7.7.tar.bz2
 * FreeRTOS ...................... 8.0.0
+* Bossac ........................            git clone git://git.code.sf.net/p/b-o-s-s-a/code b-o-s-s-a-code
 
-NOTE: To download the "Atmel Software Framework", you need to register with atmel!
+NOTE: To find the link to the "Atmel Software Framework" you need to register with atmel.
 
 Installing GCC
 --------------

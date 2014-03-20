@@ -9,6 +9,22 @@ HERE=$PWD
 BINUTILS_VERSION=2.24
 GCC_VERSION=4.8.2
 NEWLIB_VERSION=2.1.0
+GDB_VERSION=7.7
+
+BINUTILS_DIRNAME=binutils-$BINUTILS_VERSION
+GCC_DIRNAME=gcc-$GCC_VERSION
+NEWLIB_DIRNAME=newlib-$NEWLIB_VERSION
+GDB_DIRNAME=gdb-$GDB_VERSION
+
+BINUTILS_TARBALL=$BINUTILS_DIRNAME.tar.bz2
+GCC_TARBALL=$GCC_DIRNAME.tar.bz2
+NEWLIB_TARBALL=$NEWLIB_DIRNAME.tar.gz
+GDB_TARBALL=$GDB_DIRNAME.tar.bz2
+
+BINUTILS_TARBALL_URL=http://ftp.gnu.org/gnu/binutils/$BINUTILS_TARBALL
+GCC_TARBALL_URL=ftp://ftp.gnu.org/gnu/gcc/gcc-$GCC_VERSION/$GCC_TARBALL
+NEWLIB_TARBALL_URL=ftp://sourceware.org/pub/newlib/$NEWLIB_TARBALL
+GDB_TARBALL_URL=http://ftp.gnu.org/gnu/gdb/$GDB_TARBALL
 
 ########################################
 
@@ -17,16 +33,16 @@ ROOT_DIR=$HERE/root
 UNPACKED_SRC_DIRS=$HERE/unpacked-src
 BUILD_DIRS=$HERE/build
 
-BINUTILS_SOURCE_DIR=$UNPACKED_SRC_DIRS/binutils-$BINUTILS_VERSION
-BINUTILS_BUILD_DIR=$BUILD_DIRS/binutils-$BINUTILS_VERSION
+BINUTILS_SOURCE_DIR=$UNPACKED_SRC_DIRS/$BINUTILS_DIRNAME
+GCC_SOURCE_DIR=$UNPACKED_SRC_DIRS/$GCC_DIRNAME
+NEWLIB_SOURCE_DIR=$UNPACKED_SRC_DIRS/$NEWLIB_DIRNAME
+GDB_SOURCE_DIR=$UNPACKED_SRC_DIRS/$GDB_DIRNAME
 
-GCC_SOURCE_DIR=$UNPACKED_SRC_DIRS/gcc-$GCC_VERSION
-
-GCC_BOOTSTRAP_BUILD_DIR=$BUILD_DIRS/gcc-$GCC_VERSION-bootstrap
-GCC_FULL_BUILD_DIR=$BUILD_DIRS/gcc-$GCC_VERSION-full
-
-NEWLIB_SOURCE_DIR=$UNPACKED_SRC_DIRS/newlib-$NEWLIB_VERSION
-NEWLIB_BUILD_DIR=$BUILD_DIRS/newlib-$NEWLIB_VERSION
+BINUTILS_BUILD_DIR=$BUILD_DIRS/$BINUTILS_DIRNAME
+GCC_BOOTSTRAP_BUILD_DIR=$BUILD_DIRS/$GCC_DIRNAME-bootstrap
+NEWLIB_BUILD_DIR=$BUILD_DIRS/$NEWLIB_DIRNAME
+GCC_FULL_BUILD_DIR=$BUILD_DIRS/$GCC_DIRNAME-full
+GDB_BUILD_DIR=$BUILD_DIRS/$GDB_DIRNAME
 
 TARGET=arm-none-eabi
 
@@ -62,14 +78,14 @@ cd $DOWNLOADS_DIR
 
 # Binutils
 
-if [ ! -f binutils-$BINUTILS_VERSION.tar.bz2 ] ; then
-    wget http://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.bz2
+if [ ! -f $BINUTILS_TARBALL ] ; then
+    wget $BINUTILS_TARBALL_URL
 fi
 
 # GCC and its dependencies
 
-if [ ! -f gcc-$GCC_VERSION.tar.bz2 ] ; then
-    wget ftp://ftp.gnu.org/gnu/gcc/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.bz2
+if [ ! -f $GCC_TARBALL ] ; then
+    wget $GCC_TARBALL_URL
 fi
 
 if [ ! -f gmp-5.1.3.tar.lz ] ; then
@@ -92,25 +108,25 @@ if [ ! -f cloog-0.18.1.tar.gz ] ; then
     wget ftp://gcc.gnu.org/pub/gcc/infrastructure/cloog-0.18.1.tar.gz
 fi
 
-# GDB
-
-if [ ! -f gdb-7.7.tar.bz2 ] ; then
-    wget http://ftp.gnu.org/gnu/gdb/gdb-7.7.tar.bz2
-fi
-
 # C libraries
 
-if [ ! -f newlib-$NEWLIB_VERSION.tar.gz ] ; then
-    wget ftp://sourceware.org/pub/newlib/newlib-$NEWLIB_VERSION.tar.gz
+if [ ! -f $NEWLIB_TARBALL ] ; then
+    wget $NEWLIB_TARBALL_URL
 fi
 
 if [ ! -f uClibc-0.9.33.tar.xz ] ; then
     wget http://www.uclibc.org/downloads/uClibc-0.9.33.tar.xz
 fi
 
+# GDB
+
+if [ ! -f $GDB_TARBALL ] ; then
+    wget $GDB_TARBALL_URL
+fi
+
 # FreeRTOS
 
-# Flash utility
+# Flash utility: BOSSA
 
 # Show all downloaded files.
 
@@ -120,23 +136,18 @@ echo
 
 ######################################## build binutils
 
-echo "@@@ [binutils] unpacking ..."
+echo "@@@ [binutils] unpacking source ..."
 
-cd $UNPACKED_SRC_DIRS
+tar x -C $UNPACKED_SRC_DIRS -f $DOWNLOADS_DIR/$BINUTILS_TARBALL
 
-tar xf $DOWNLOADS_DIR/binutils-$BINUTILS_VERSION.tar.bz2
-
-echo "@@@ [binutils] Emitting configure help ..."
+echo "@@@ [binutils] emitting configure help ..."
 
 $BINUTILS_SOURCE_DIR/configure --help > $HERE/ConfigureHelp_binutils.txt
 
-echo "@@@ [binutils] Creating build directory ..."
+echo "@@@ [binutils] configuring in new build directory ..."
 
-mkdir $BINUTILS_BUILD_DIR
+mkdir $BINUTILS_BUILD_DIR && cd $BINUTILS_BUILD_DIR
 
-echo "@@@ [binutils] configuring ..."
-
-cd $BINUTILS_BUILD_DIR
 $BINUTILS_SOURCE_DIR/configure --prefix=$ROOT_DIR --program-prefix=$PROGRAM_PREFIX $CONFIG_OPTS_EXTRA --target=$TARGET
 
 echo "@@@ [binutils] making ..."
@@ -153,32 +164,25 @@ find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $HERE/md5_after_binutils
 
 ######################################## build gcc/bootstrap
 
-# Note that building the toolchain depends on the availability of a toolchain.
-# In essence, what we do is this:
+# Note that building the toolchain depends on the availability of a C library
+# To solve this, we perform these steps:
 #
-# (1) Build the gcc compiler partially (good enough to be able to build newlib)
-# (2) Build newlib using the cross compiler
-# (3) Finish building GCC
+# (1) Build the gcc compiler partially (good enough to be able to build newlib) -- a "gcc bootstrap" build.
+# (2) Build newlib using the bootstrap compiler.
+# (3) Build a full gcc.
 
-echo "@@@ [gcc/bootstrap] unpacking GCC ..."
+echo "@@@ [gcc/bootstrap] unpacking source ..."
 
-cd $UNPACKED_SRC_DIRS
-
-tar xf $DOWNLOADS_DIR/gcc-$GCC_VERSION.tar.bz2
-
-tar xf $DOWNLOADS_DIR/newlib-$NEWLIB_VERSION.tar.gz
+tar x -C $UNPACKED_SRC_DIRS -f $DOWNLOADS_DIR/$GCC_TARBALL
 
 echo "@@@ [gcc/bootstrap] emitting configure help ..."
 
 $GCC_SOURCE_DIR/configure --help > $HERE/ConfigureHelp_gcc.txt
 
-echo "@@@ [gcc/bootstrap] creating build directory ..."
+echo "@@@ [gcc/bootstrap] configuring in new build directory ..."
 
-mkdir $GCC_BOOTSTRAP_BUILD_DIR
+mkdir $GCC_BOOTSTRAP_BUILD_DIR && cd $GCC_BOOTSTRAP_BUILD_DIR
 
-echo "@@@ [gcc/bootstrap] configuring ..."
-
-cd $GCC_BOOTSTRAP_BUILD_DIR
 $GCC_SOURCE_DIR/configure  --target=$TARGET --prefix=$ROOT_DIR --program-prefix=$PROGRAM_PREFIX --enable-languages=c,c++ --without-headers --with-newlib --with-gnu-as --with-gnu-ld
 
 echo "@@@ [gcc/bootstrap] making ..."
@@ -195,29 +199,27 @@ find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $HERE/md5_after_gcc_bootstrap
 
 ######################################## build newlib
 
-echo "@@@ [newlib] unpacking NEWLIB ..."
+echo "@@@ [newlib] unpacking source ..."
 
-cd $UNPACKED_SRC_DIRS
+tar x -C $UNPACKED_SRC_DIRS -f $DOWNLOADS_DIR/$NEWLIB_TARBALL
 
-tar xf $DOWNLOADS_DIR/newlib-$NEWLIB_VERSION.tar.gz
-
-echo "@@@ [newlib] Emitting configure help ..."
+echo "@@@ [newlib] emitting configure help ..."
 
 $NEWLIB_SOURCE_DIR/configure --help > $HERE/ConfigureHelp_newlib.txt
 
-echo "@@@ [newlib] Creating build directory ..."
-
-mkdir $NEWLIB_BUILD_DIR
-
-echo "@@@ [newlib] configuring ..."
+echo "@@@ [newlib] configuring in new build directory ..."
 
 # Note that newlib expects the toolchain commands to be named arm-eabi-name-<toolname>, and there is
 # no easy way to override this.
+#
+# We use the "--disable-newlib-supplied-syscalls" to omit the 17 stub 'syscalls' provided by newlib.
+# Better alternatives are provided by the Atmel Software Framework (ASF).
 
-# We add to PATH, to make sure that the configure scripts finds the just-installed GCC compiler.
+# We add to PATH, to make sure that the newlib configure script finds the just-installed GCC bootstrap compiler.
 export PATH=$ROOT_DIR/bin:$PATH
 
-cd $NEWLIB_BUILD_DIR
+mkdir $NEWLIB_BUILD_DIR && cd $NEWLIB_BUILD_DIR
+
 $NEWLIB_SOURCE_DIR/configure --target=$TARGET --prefix=$ROOT_DIR --disable-newlib-supplied-syscalls
 
 echo "@@@ [newlib] making ..."
@@ -234,13 +236,10 @@ find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $HERE/md5_after_newlib
 
 ######################################## build gcc/full
 
-echo "@@@ [gcc/full] creating build directory ..."
+echo "@@@ [gcc/full] configuring in new build directory ..."
 
-mkdir $GCC_FULL_BUILD_DIR
+mkdir $GCC_FULL_BUILD_DIR && cd $GCC_FULL_BUILD_DIR
 
-echo "@@@ [gcc/full] configuring ..."
-
-cd $GCC_FULL_BUILD_DIR
 $GCC_SOURCE_DIR/configure --target=$TARGET --prefix=$ROOT_DIR --program-prefix=$PROGRAM_PREFIX --enable-languages=c,c++ --with-newlib --with-gnu-as --with-gnu-ld --disable-shared --disable-libssp
 
 echo "@@@ [gcc/full] making ..."
@@ -254,6 +253,36 @@ make install
 echo "@@@ [gcc/full] creating rootdir index ..."
 
 find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $HERE/md5_after_gcc_full
+
+######################################## build gdb
+
+echo "@@@ [gdb] unpacking source ..."
+
+tar x -C $UNPACKED_SRC_DIRS -f $DOWNLOADS_DIR/$GDB_TARBALL
+
+echo "@@@ [gdb] emitting configure help ..."
+
+$NEWLIB_SOURCE_DIR/configure --help > $HERE/ConfigureHelp_gdb.txt
+
+echo "@@@ [gdb] configuring in new build directory ..."
+
+mkdir $GDB_BUILD_DIR && cd $GDB_BUILD_DIR
+
+$GDB_SOURCE_DIR/configure --target=$TARGET --prefix=$ROOT_DIR --program-prefix=$PROGRAM_PREFIX
+
+echo "@@@ [gdb] making ..."
+
+make $MAKE_OPTS all
+
+echo "@@@ [gdb] installing ..."
+
+make install
+
+echo "@@@ [gdb] creating rootdir index ..."
+
+find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $HERE/md5_after_gdb
+
+######################################## all done
 
 echo
 echo "@@@ all done!"
