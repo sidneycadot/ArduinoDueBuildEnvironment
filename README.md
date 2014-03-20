@@ -8,7 +8,7 @@ The Arduino Due is a small form-factor embedded computer built around the Atmelk
 (2) A working newlib, uclib, or other small C library
 (3) The appropriate CMSIS stuff for the ARM chip
 (4) A working FreeRTOS
-(5) Flash tool
+(5) Flash tool ("BOSSA")
 (6) Working c++, STL
 
 Versions

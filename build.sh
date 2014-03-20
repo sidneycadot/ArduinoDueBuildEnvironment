@@ -147,6 +147,10 @@ echo "@@@ [binutils] installing ..."
 
 make install
 
+echo "@@@ [binutils] creating rootdir index ..."
+
+find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $HERE/md5_after_binutils
+
 ######################################## build gcc/bootstrap
 
 # Note that building the toolchain depends on the availability of a toolchain.
@@ -177,13 +181,17 @@ echo "@@@ [gcc/bootstrap] configuring ..."
 cd $GCC_BOOTSTRAP_BUILD_DIR
 $GCC_SOURCE_DIR/configure  --target=$TARGET --prefix=$ROOT_DIR --program-prefix=$PROGRAM_PREFIX --enable-languages=c,c++ --without-headers --with-newlib --with-gnu-as --with-gnu-ld
 
-echo "@@@ [gcc/bootstrap] making bootstrap compiler..."
+echo "@@@ [gcc/bootstrap] making ..."
 
 make $MAKE_OPTS all-gcc
 
-echo "@@@ [gcc/bootstrap] installing bootstrap compiler..."
+echo "@@@ [gcc/bootstrap] installing ..."
 
 make install-gcc
+
+echo "@@@ [gcc/bootstrap] creating rootdir index ..."
+
+find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $HERE/md5_after_gcc_bootstrap
 
 ######################################## build newlib
 
@@ -203,11 +211,14 @@ mkdir $NEWLIB_BUILD_DIR
 
 echo "@@@ [newlib] configuring ..."
 
-# Note that we add to PATH, to make sure that the configure scripts finds the just-installed GCC compiler.
+# Note that newlib expects the toolchain commands to be named arm-eabi-name-<toolname>, and there is
+# no easy way to override this.
+
+# We add to PATH, to make sure that the configure scripts finds the just-installed GCC compiler.
 export PATH=$ROOT_DIR/bin:$PATH
 
 cd $NEWLIB_BUILD_DIR
-$NEWLIB_SOURCE_DIR/configure --target=$TARGET --prefix=$ROOT_DIR
+$NEWLIB_SOURCE_DIR/configure --target=$TARGET --prefix=$ROOT_DIR --disable-newlib-supplied-syscalls
 
 echo "@@@ [newlib] making ..."
 
@@ -216,6 +227,10 @@ make all $MAKE_OPTS
 echo "@@@ [newlib] installing ..."
 
 make install
+
+echo "@@@ [newlib] creating rootdir index ..."
+
+find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $HERE/md5_after_newlib
 
 ######################################## build gcc/full
 
@@ -228,13 +243,17 @@ echo "@@@ [gcc/full] configuring ..."
 cd $GCC_FULL_BUILD_DIR
 $GCC_SOURCE_DIR/configure --target=$TARGET --prefix=$ROOT_DIR --program-prefix=$PROGRAM_PREFIX --enable-languages=c,c++ --with-newlib --with-gnu-as --with-gnu-ld --disable-shared --disable-libssp
 
-echo "@@@ [gcc/full] making full compiler..."
+echo "@@@ [gcc/full] making ..."
 
 make $MAKE_OPTS all
 
-echo "@@@ [gcc/full] installing full compiler..."
+echo "@@@ [gcc/full] installing ..."
 
 make install
 
+echo "@@@ [gcc/full] creating rootdir index ..."
+
+find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $HERE/md5_after_gcc_full
+
 echo
-echo "ALL DONE!!!"
+echo "@@@ all done!"

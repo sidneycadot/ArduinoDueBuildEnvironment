@@ -6,3 +6,8 @@ root
 ConfigureHelp_binutils.txt
 ConfigureHelp_gcc.txt
 ConfigureHelp_newlib.txt
+
+md5_after_binutils
+md5_after_gcc_bootstrap
+md5_after_gcc_full
+md5_after_newlib
