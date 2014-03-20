@@ -1,8 +1,19 @@
 
-GOALS
-=====
+Arduino Due Build Environment
+=============================
 
-The Arduino Due is a small form-factor embedded computer built around the Atmelk AT91SAM3X8E (ARM Cortex-M3) processor.
+Introduction
+------------
+
+The Arduino Due is a small form-factor embedded computer built around the Atmel AT91SAM3X8E (ARM Cortex-M3) processor.
+It is quite different from earlier Arduino models that are based on an Atmel AVR processor.
+
+The Arduino IDE is simplified for casual tinkerers; its language is C++-like, but a custom preprocessor is used to
+change the code before it is compiled to C++. To do proper C/C++ development, a classic build environment is
+needed.
+
+Goals
+-----
 
 (1) A working cross-compiler GCC build environment for the ARM-based Arduino Due.
 (2) A working newlib, uclib, or other small C library
@@ -10,6 +21,7 @@ The Arduino Due is a small form-factor embedded computer built around the Atmelk
 (4) A working FreeRTOS
 (5) Flash tool ("BOSSA")
 (6) Working c++, STL
+(7) Minix?
 
 Versions
 --------
@@ -30,7 +42,7 @@ Current versions (March 2014):
 * Atmel Software Framework ...... 3.15       http://www.atmel.com/images/asf-standalone-archive-3.15.0.87.zip
 * GDB ........................... 7.7        http://ftp.gnu.org/gnu/gdb/gdb-7.7.tar.bz2
 * FreeRTOS ...................... 8.0.0
-* Bossac ........................            git clone git://git.code.sf.net/p/b-o-s-s-a/code b-o-s-s-a-code
+* Bossac ........................            git://git.code.sf.net/p/b-o-s-s-a/code
 
 NOTE: To find the link to the "Atmel Software Framework" you need to register with atmel.
 

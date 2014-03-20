@@ -4,7 +4,7 @@ set -e
 
 HERE=$PWD
 
-########################################
+######################################## set up basic variables
 
 BINUTILS_VERSION=2.24
 GCC_VERSION=4.8.2
@@ -21,28 +21,32 @@ GCC_TARBALL=$GCC_DIRNAME.tar.bz2
 NEWLIB_TARBALL=$NEWLIB_DIRNAME.tar.gz
 GDB_TARBALL=$GDB_DIRNAME.tar.bz2
 
-BINUTILS_TARBALL_URL=http://ftp.gnu.org/gnu/binutils/$BINUTILS_TARBALL
+BINUTILS_TARBALL_URL=ftp://ftp.gnu.org/gnu/binutils/$BINUTILS_TARBALL
 GCC_TARBALL_URL=ftp://ftp.gnu.org/gnu/gcc/gcc-$GCC_VERSION/$GCC_TARBALL
+GDB_TARBALL_URL=ftp://ftp.gnu.org/gnu/gdb/$GDB_TARBALL
 NEWLIB_TARBALL_URL=ftp://sourceware.org/pub/newlib/$NEWLIB_TARBALL
-GDB_TARBALL_URL=http://ftp.gnu.org/gnu/gdb/$GDB_TARBALL
 
-########################################
+######################################## set up directories
 
 DOWNLOADS_DIR=$HERE/downloads
 ROOT_DIR=$HERE/root
-UNPACKED_SRC_DIRS=$HERE/unpacked-src
-BUILD_DIRS=$HERE/build
 
-BINUTILS_SOURCE_DIR=$UNPACKED_SRC_DIRS/$BINUTILS_DIRNAME
-GCC_SOURCE_DIR=$UNPACKED_SRC_DIRS/$GCC_DIRNAME
-NEWLIB_SOURCE_DIR=$UNPACKED_SRC_DIRS/$NEWLIB_DIRNAME
-GDB_SOURCE_DIR=$UNPACKED_SRC_DIRS/$GDB_DIRNAME
+SOURCE_DIRS=$HERE/source
+
+BINUTILS_SOURCE_DIR=$SOURCE_DIRS/$BINUTILS_DIRNAME
+GCC_SOURCE_DIR=$SOURCE_DIRS/$GCC_DIRNAME
+NEWLIB_SOURCE_DIR=$SOURCE_DIRS/$NEWLIB_DIRNAME
+GDB_SOURCE_DIR=$SOURCE_DIRS/$GDB_DIRNAME
+
+BUILD_DIRS=$HERE/build
 
 BINUTILS_BUILD_DIR=$BUILD_DIRS/$BINUTILS_DIRNAME
 GCC_BOOTSTRAP_BUILD_DIR=$BUILD_DIRS/$GCC_DIRNAME-bootstrap
 NEWLIB_BUILD_DIR=$BUILD_DIRS/$NEWLIB_DIRNAME
 GCC_FULL_BUILD_DIR=$BUILD_DIRS/$GCC_DIRNAME-full
 GDB_BUILD_DIR=$BUILD_DIRS/$GDB_DIRNAME
+
+######################################## set up option variables
 
 TARGET=arm-none-eabi
 
@@ -54,7 +58,7 @@ MAKE_OPTS="-j8"
 
 echo "@@@ [all] removing stale directories ..."
 
-rm -rf $UNPACKED_SRC_DIRS
+rm -rf $SOURCE_DIRS
 rm -rf $BUILD_DIRS
 rm -rf $ROOT_DIR
 
@@ -62,7 +66,7 @@ rm -rf $ROOT_DIR
 
 echo "@@@ [all] setting up fresh directories ..."
 
-mkdir $UNPACKED_SRC_DIRS
+mkdir $SOURCE_DIRS
 mkdir $BUILD_DIRS
 mkdir $ROOT_DIR
 
@@ -124,9 +128,13 @@ if [ ! -f $GDB_TARBALL ] ; then
     wget $GDB_TARBALL_URL
 fi
 
+# ASF
+
 # FreeRTOS
 
 # Flash utility: BOSSA
+
+# Minix
 
 # Show all downloaded files.
 
@@ -138,7 +146,7 @@ echo
 
 echo "@@@ [binutils] unpacking source ..."
 
-tar x -C $UNPACKED_SRC_DIRS -f $DOWNLOADS_DIR/$BINUTILS_TARBALL
+tar x -C $SOURCE_DIRS -f $DOWNLOADS_DIR/$BINUTILS_TARBALL
 
 echo "@@@ [binutils] emitting configure help ..."
 
@@ -173,7 +181,7 @@ find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $HERE/md5_after_binutils
 
 echo "@@@ [gcc/bootstrap] unpacking source ..."
 
-tar x -C $UNPACKED_SRC_DIRS -f $DOWNLOADS_DIR/$GCC_TARBALL
+tar x -C $SOURCE_DIRS -f $DOWNLOADS_DIR/$GCC_TARBALL
 
 echo "@@@ [gcc/bootstrap] emitting configure help ..."
 
@@ -201,7 +209,7 @@ find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $HERE/md5_after_gcc_bootstrap
 
 echo "@@@ [newlib] unpacking source ..."
 
-tar x -C $UNPACKED_SRC_DIRS -f $DOWNLOADS_DIR/$NEWLIB_TARBALL
+tar x -C $SOURCE_DIRS -f $DOWNLOADS_DIR/$NEWLIB_TARBALL
 
 echo "@@@ [newlib] emitting configure help ..."
 
@@ -258,7 +266,7 @@ find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $HERE/md5_after_gcc_full
 
 echo "@@@ [gdb] unpacking source ..."
 
-tar x -C $UNPACKED_SRC_DIRS -f $DOWNLOADS_DIR/$GDB_TARBALL
+tar x -C $SOURCE_DIRS -f $DOWNLOADS_DIR/$GDB_TARBALL
 
 echo "@@@ [gdb] emitting configure help ..."
 
