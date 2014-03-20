@@ -132,6 +132,10 @@ fi
 
 # FreeRTOS
 
+if [ ! -f FreeRTOSV8.0.0.zip ] ; then
+    http://garr.dl.sourceforge.net/project/freertos/FreeRTOS/V8.0.0/FreeRTOSV8.0.0.zip
+fi
+
 # Flash utility: BOSSA
 
 # Minix
