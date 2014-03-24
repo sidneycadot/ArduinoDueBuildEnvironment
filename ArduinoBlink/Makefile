@@ -7,7 +7,6 @@ ARDUINO_SAM_DIR      = $(ARDUINO_DIR)/hardware/arduino/sam
 
 ARDUINO_SUPPORT_CODE_DIR = $(ARDUINO_SAM_DIR)/cores/arduino
 
-#ARM_COMPILER_DIR = $(ARDUINO_HW_TOOLS_DIR)/g++_arm_none_eabi/bin
 ARM_COMPILER_DIR = ../root/bin
 
 CC      = $(ARM_COMPILER_DIR)/arm-none-eabi-gcc
@@ -16,7 +15,15 @@ AR      = $(ARM_COMPILER_DIR)/arm-none-eabi-ar
 OBJCOPY = $(ARM_COMPILER_DIR)/arm-none-eabi-objcopy
 BOSSAC  = $(ARDUINO_HW_TOOLS_DIR)/bossac
 
-CPPFLAGS = -DMSEC_DELAY=50 -Dprintf=iprintf -DF_CPU=84000000L -DARDUINO=156 -DARDUINO_SAM_DUE -DARDUINO_ARCH_SAM -D__SAM3X8E__ -DUSB_VID=0x2341 -DUSB_PID=0x003e -DUSBCON -DUSB_MANUFACTURER="\"Unknown\"" -DUSB_PRODUCT="\"Arduino Due\"" -I$(ARDUINO_SAM_DIR)/system/libsam -I$(ARDUINO_SAM_DIR)/system/CMSIS/CMSIS/Include/ -I$(ARDUINO_SAM_DIR)/system/CMSIS/Device/ATMEL/ -I$(ARDUINO_SAM_DIR)/cores/arduino -I$(ARDUINO_SAM_DIR)/variants/arduino_due_x
+CPPFLAGS = -DMSEC_DELAY=200 \
+           -Dprintf=iprintf \
+           -DF_CPU=84000000L -DARDUINO=156 -DARDUINO_SAM_DUE -DARDUINO_ARCH_SAM -D__SAM3X8E__ \
+           -DUSB_VID=0x2341 -DUSB_PID=0x003e -DUSBCON -DUSB_MANUFACTURER="\"Unknown\"" -DUSB_PRODUCT="\"Arduino Due\"" \
+           -I$(ARDUINO_SAM_DIR)/system/libsam \
+           -I$(ARDUINO_SAM_DIR)/system/CMSIS/CMSIS/Include/ \
+           -I$(ARDUINO_SAM_DIR)/system/CMSIS/Device/ATMEL/ \
+           -I$(ARDUINO_SAM_DIR)/cores/arduino \
+           -I$(ARDUINO_SAM_DIR)/variants/arduino_due_x
 
 CFLAGS   = -g -Os -w -ffunction-sections -fdata-sections -nostdlib --param max-inline-insns-single=500 -mcpu=cortex-m3 -mthumb
 CXXFLAGS = -g -Os -w -ffunction-sections -fdata-sections -nostdlib --param max-inline-insns-single=500 -mcpu=cortex-m3 -mthumb -fno-rtti -fno-exceptions
@@ -32,7 +39,7 @@ Blink.bin : Blink.elf
 Blink.elf : $(OBJS)
 
 	$(CXX) -Os -Wl,--gc-sections -mcpu=cortex-m3 -T$(ARDUINO_SAM_DIR)/variants/arduino_due_x/linker_scripts/gcc/flash.ld -Wl,-Map,Blink.map -o Blink.elf \
-	-L/tmp/build2816231482387570320.tmp -lm -lgcc -mthumb \
+	-lm -lgcc -mthumb \
 	-Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--warn-unresolved-symbols \
 	-Wl,--start-group $(OBJS) $(ARDUINO_SAM_DIR)/variants/arduino_due_x/libsam_sam3x8e_gcc_rel.a -Wl,--end-group
 

@@ -8,23 +8,56 @@ HERE=$PWD
 
 BINUTILS_VERSION=2.24
 GCC_VERSION=4.8.2
+GMP_VERSION=5.1.3
+MPFR_VERSION=3.1.2
+MPC_VERSION=1.0.2
+ISL_VERSION=0.12.2
+CLOOG_VERSION=0.18.1
 NEWLIB_VERSION=2.1.0
+UCLIBC_VERSION=0.9.33
 GDB_VERSION=7.7
+FREERTOS_VERSION=8.0.0
+ASF_VERSION=3.15.0.87
 
 BINUTILS_DIRNAME=binutils-$BINUTILS_VERSION
 GCC_DIRNAME=gcc-$GCC_VERSION
+GMP_DIRNAME=gmp-$GMP_VERSION
+MPFR_DIRNAME=mpfr-$MPFR_VERSION
+MPC_DIRNAME=mpc-$MPC_VERSION
+ISL_DIRNAME=isl-$ISL_VERSION
+CLOOG_DIRNAME=cloog-$CLOOG_VERSION
 NEWLIB_DIRNAME=newlib-$NEWLIB_VERSION
+UCLIBC_DIRNAME=uClibc-$UCLIBC_VERSION
 GDB_DIRNAME=gdb-$GDB_VERSION
+FREERTOS_DIRNAME=FreeRTOSV$FREERTOS_VERSION
+# NOTE: we don't define ASF_DIRNAME.
+# ASF_ZIPFILE unpacks to a directory called "xdk-asf-3.15.0".
 
 BINUTILS_TARBALL=$BINUTILS_DIRNAME.tar.bz2
 GCC_TARBALL=$GCC_DIRNAME.tar.bz2
+GMP_TARBALL=$GMP_DIRNAME.tar.lz
+MPFR_TARBALL=$MPFR_DIRNAME.tar.xz
+MPC_TARBALL=$MPC_DIRNAME.tar.gz
+ISL_TARBALL=$ISL_DIRNAME.tar.bz2
+CLOOG_TARBALL=$CLOOG_DIRNAME.tar.gz
 NEWLIB_TARBALL=$NEWLIB_DIRNAME.tar.gz
+UCLIBC_TARBALL=$UCLIBC_DIRNAME.tar.xz
 GDB_TARBALL=$GDB_DIRNAME.tar.bz2
+FREERTOS_ZIPFILE=$FREERTOS_DIRNAME.zip
+ASF_ZIPFILE=asf-standalone-archive-$ASF_VERSION.zip
 
 BINUTILS_TARBALL_URL=ftp://ftp.gnu.org/gnu/binutils/$BINUTILS_TARBALL
 GCC_TARBALL_URL=ftp://ftp.gnu.org/gnu/gcc/gcc-$GCC_VERSION/$GCC_TARBALL
-GDB_TARBALL_URL=ftp://ftp.gnu.org/gnu/gdb/$GDB_TARBALL
+GMP_TARBALL_URL=https://gmplib.org/download/gmp/$GMP_TARBALL
+MPFR_TARBALL_URL=http://www.mpfr.org/mpfr-current/$MPFR_TARBALL
+MPC_TARBALL_URL=ftp://ftp.gnu.org/gnu/mpc/$MPC_TARBALL
+ISL_TARBALL_URL=ftp://gcc.gnu.org/pub/gcc/infrastructure/$ISL_TARBALL
+CLOOG_TARBALL_URL=ftp://gcc.gnu.org/pub/gcc/infrastructure/$CLOOG_TARBALL
 NEWLIB_TARBALL_URL=ftp://sourceware.org/pub/newlib/$NEWLIB_TARBALL
+UCLIBC_TARBALL_URL=http://www.uclibc.org/downloads/$UCLIBC_TARBALL
+GDB_TARBALL_URL=ftp://ftp.gnu.org/gnu/gdb/$GDB_TARBALL
+FREERTOS_ZIPFILE_URL=http://garr.dl.sourceforge.net/project/freertos/FreeRTOS/$FREERTOS_VERSION/$FREERTOS_ZIPFILE
+ASF_ZIPFILE_URL=http://www.atmel.com/images/$ASF_ZIPFILE
 
 ######################################## set up directories
 
@@ -35,6 +68,11 @@ SOURCE_DIRS=$HERE/source
 
 BINUTILS_SOURCE_DIR=$SOURCE_DIRS/$BINUTILS_DIRNAME
 GCC_SOURCE_DIR=$SOURCE_DIRS/$GCC_DIRNAME
+GMP_SOURCE_DIR=$SOURCE_DIRS/$GMP_DIRNAME
+MPFR_SOURCE_DIR=$SOURCE_DIRS/$MPFR_DIRNAME
+MPC_SOURCE_DIR=$SOURCE_DIRS/$MPC_DIRNAME
+ISL_SOURCE_DIR=$SOURCE_DIRS/$ISL_DIRNAME
+CLOOG_SOURCE_DIR=$SOURCE_DIRS/$CLOOG_DIRNAME
 NEWLIB_SOURCE_DIR=$SOURCE_DIRS/$NEWLIB_DIRNAME
 GDB_SOURCE_DIR=$SOURCE_DIRS/$GDB_DIRNAME
 
@@ -92,24 +130,26 @@ if [ ! -f $GCC_TARBALL ] ; then
     wget $GCC_TARBALL_URL
 fi
 
-if [ ! -f gmp-5.1.3.tar.lz ] ; then
-    wget https://gmplib.org/download/gmp/gmp-5.1.3.tar.lz
+# Dependencies of GCC
+
+if [ ! -f $GMP_TARBALL ] ; then
+    wget $GMP_TARBALL_URL
 fi
 
-if [ ! -f mpfr-3.1.2.tar.xz ] ; then
-    wget http://www.mpfr.org/mpfr-current/mpfr-3.1.2.tar.xz
+if [ ! -f $MPFR_TARBALL ] ; then
+    wget $MPFR_TARBALL_URL
 fi
 
-if [ ! -f mpc-1.0.2.tar.gz ] ; then
-    wget ftp://ftp.gnu.org/gnu/mpc/mpc-1.0.2.tar.gz
+if [ ! -f $MPC_TARBALL ] ; then
+    wget $MPC_TARBALL_URL
 fi
 
-if [ ! -f isl-0.12.2.tar.bz2 ] ; then
-    wget ftp://gcc.gnu.org/pub/gcc/infrastructure/isl-0.12.2.tar.bz2
+if [ ! -f $ISL_TARBALL ] ; then
+    wget $ISL_TARBALL_URL
 fi
 
-if [ ! -f cloog-0.18.1.tar.gz ] ; then
-    wget ftp://gcc.gnu.org/pub/gcc/infrastructure/cloog-0.18.1.tar.gz
+if [ ! -f $CLOOG_TARBALL ] ; then
+    wget $CLOOG_TARBALL_URL
 fi
 
 # C libraries
@@ -118,8 +158,8 @@ if [ ! -f $NEWLIB_TARBALL ] ; then
     wget $NEWLIB_TARBALL_URL
 fi
 
-if [ ! -f uClibc-0.9.33.tar.xz ] ; then
-    wget http://www.uclibc.org/downloads/uClibc-0.9.33.tar.xz
+if [ ! -f $UCLIBC_TARBALL ] ; then
+    wget $UCLIBC_TARBALL_URL
 fi
 
 # GDB
@@ -130,17 +170,21 @@ fi
 
 # ASF
 
-# FreeRTOS
-
-if [ ! -f FreeRTOSV8.0.0.zip ] ; then
-    http://garr.dl.sourceforge.net/project/freertos/FreeRTOS/V8.0.0/FreeRTOSV8.0.0.zip
+if [ ! -f $ASF_ZIPFILE ] ; then
+    wget $ASF_ZIPFILE_URL
 fi
 
-# Flash utility: BOSSA
+# FreeRTOS
+
+if [ ! -f $FREERTOS_ZIPFILE ] ; then
+    wget $FREERTOS_ZIPFILE_URL
+fi
+
+# Flash utility: bossa
 
 # Minix
 
-# Show all downloaded files.
+# Show MD5 hashes of all downloaded files.
 
 echo
 md5sum *
@@ -186,6 +230,25 @@ find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $HERE/md5_after_binutils
 echo "@@@ [gcc/bootstrap] unpacking source ..."
 
 tar x -C $SOURCE_DIRS -f $DOWNLOADS_DIR/$GCC_TARBALL
+
+echo "@@@ [gcc/bootstrap] unpacking source of GCC dependencies ..."
+
+tar x -C $SOURCE_DIRS -f $DOWNLOADS_DIR/$GMP_TARBALL
+tar x -C $SOURCE_DIRS -f $DOWNLOADS_DIR/$MPFR_TARBALL
+tar x -C $SOURCE_DIRS -f $DOWNLOADS_DIR/$MPC_TARBALL
+tar x -C $SOURCE_DIRS -f $DOWNLOADS_DIR/$ISL_TARBALL
+tar x -C $SOURCE_DIRS -f $DOWNLOADS_DIR/$CLOOG_TARBALL
+
+echo "@@@ [gcc/bootstrap] linking GCC dependencies into GCC source directory ..."
+
+# Linking these into the GCC directory with the names given will instruct GCC to use them for its own build.
+# See http://gcc.gnu.org/install/prerequisites.html
+
+ln -s $GMP_SOURCE_DIR   $GCC_SOURCE_DIR/gmp
+ln -s $MPFR_SOURCE_DIR  $GCC_SOURCE_DIR/mpfr
+ln -s $MPC_SOURCE_DIR   $GCC_SOURCE_DIR/mpc
+ln -s $ISL_SOURCE_DIR   $GCC_SOURCE_DIR/isl
+ln -s $CLOOG_SOURCE_DIR $GCC_SOURCE_DIR/cloog
 
 echo "@@@ [gcc/bootstrap] emitting configure help ..."
 
