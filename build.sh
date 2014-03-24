@@ -204,7 +204,7 @@ echo "@@@ [binutils] configuring in new build directory ..."
 
 mkdir $BINUTILS_BUILD_DIR && cd $BINUTILS_BUILD_DIR
 
-$BINUTILS_SOURCE_DIR/configure --prefix=$ROOT_DIR --program-prefix=$PROGRAM_PREFIX $CONFIG_OPTS_EXTRA --target=$TARGET
+$BINUTILS_SOURCE_DIR/configure --prefix=$ROOT_DIR --program-prefix=$PROGRAM_PREFIX --target=$TARGET
 
 echo "@@@ [binutils] making ..."
 
@@ -258,7 +258,7 @@ echo "@@@ [gcc/bootstrap] configuring in new build directory ..."
 
 mkdir $GCC_BOOTSTRAP_BUILD_DIR && cd $GCC_BOOTSTRAP_BUILD_DIR
 
-$GCC_SOURCE_DIR/configure  --target=$TARGET --prefix=$ROOT_DIR --program-prefix=$PROGRAM_PREFIX --enable-languages=c,c++ --without-headers --with-newlib --with-gnu-as --with-gnu-ld
+$GCC_SOURCE_DIR/configure --target=$TARGET --prefix=$ROOT_DIR --program-prefix=$PROGRAM_PREFIX --enable-languages=c,c++ --without-headers --with-newlib --with-gnu-as --with-gnu-ld
 
 echo "@@@ [gcc/bootstrap] making ..."
 
