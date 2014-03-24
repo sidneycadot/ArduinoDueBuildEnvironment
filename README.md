@@ -28,7 +28,7 @@ Versions
 
 Current versions (March 2014):
 
-| Tool / library           | version | project url                                          | Note                                            |
+| tool / library           | version | project url                                          | status                                          |
 ---------------------------|---------|------------------------------------------------------|------------------------------------------------ |
 | Binutils                 | 2.24    | http://www.gnu.org/software/binutils/                | downloaded and built.                           |
 | GCC                      | 4.8.2   | http://gcc.gnu.org/                                  | downloaded and built.                           |
