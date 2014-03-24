@@ -28,22 +28,22 @@ Versions
 
 Current versions (March 2014):
 
-| Tool / library           | version | project url                            | Note
--------------------------------------------------------------------------------
-| Binutils                 | 2.24    |                                        | downloaded and built.
-| GCC                      | 4.8.2   |                                        | downloaded and built.
-| GMP                      | 5.1.3   |                                        | downloaded as GCC dependency, but not yet used.
-| MPFR                     | 3.1.2   |                                        | downloaded as GCC dependency, but not yet used.
-| MPC                      | 1.0.2   |                                        | downloaded as GCC dependency, but not yet used.
-| ISL                      | 0.12.2  |                                        | downloaded as GCC dependency, but not yet used.
-| CLoog                    | 0.18.1  |                                        | downloaded as GCC dependency, but not yet used.
-| NewLib                   | 2.1.0   | http://sourceware.org/newlib/          | downloaded and built.
-| uClibc                   | 0.9.33  | http://www.uclibc.org/                 | downloaded but not yet built.
-| Atmel Software Framework | 3.15    |                                        | downloaded.
-| GDB                      | 7.7     |                                        | downloaded and built.
-| Bossac                   |         | git://git.code.sf.net/p/b-o-s-s-a/code | not downloaded.
-| FreeRTOS                 | 8.0.0   |                                        | downloaded, not currently used.
-| Minix                    |         |                                        | planned for future.
+| Tool / library           | version | project url                            | Note                                            |
+---------------------------|---------|----------------------------------------|------------------------------------------------ |
+| Binutils                 | 2.24    |                                        | downloaded and built.                           |
+| GCC                      | 4.8.2   |                                        | downloaded and built.                           |
+| GMP                      | 5.1.3   |                                        | downloaded as GCC dependency, but not yet used. |
+| MPFR                     | 3.1.2   |                                        | downloaded as GCC dependency, but not yet used. |
+| MPC                      | 1.0.2   |                                        | downloaded as GCC dependency, but not yet used. |
+| ISL                      | 0.12.2  |                                        | downloaded as GCC dependency, but not yet used. |
+| CLoog                    | 0.18.1  |                                        | downloaded as GCC dependency, but not yet used. |
+| NewLib                   | 2.1.0   | http://sourceware.org/newlib/          | downloaded and built.                           |
+| uClibc                   | 0.9.33  | http://www.uclibc.org/                 | downloaded but not yet built.                   |
+| Atmel Software Framework | 3.15    |                                        | downloaded.                                     |
+| GDB                      | 7.7     |                                        | downloaded and built.                           |
+| Bossac                   |         | git://git.code.sf.net/p/b-o-s-s-a/code | not downloaded.                                 |
+| FreeRTOS                 | 8.0.0   |                                        | downloaded, not currently used.                 |
+| Minix                    |         |                                        | planned for future.                             |
 
 NOTE: To find the link to the "Atmel Software Framework" you need to register with atmel. You can also try looking at
       http://spaces.atmel.com/gf/project/asf/frs/?action=&br_pkgrlssort_by=release_name&br_pkgrlssort_order=asc to
