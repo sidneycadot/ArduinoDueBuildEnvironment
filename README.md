@@ -28,7 +28,6 @@ Versions
 
 Current versions (March 2014):
 
----------------------------|---------|------------------------------------------------------|------------------------------------------------ |
 | Tool / library           | version | project url                                          | Note                                            |
 ---------------------------|---------|------------------------------------------------------|------------------------------------------------ |
 | Binutils                 | 2.24    | http://www.gnu.org/software/binutils/                | downloaded and built.                           |
@@ -45,7 +44,6 @@ Current versions (March 2014):
 | Bossac                   | 1.2.1   | http://www.shumatech.com/web/products/bossa          | not downloaded.                                 |
 | FreeRTOS                 | 8.0.0   | http://www.freertos.org/                             | downloaded, not currently used.                 |
 | Minix                    | 3.2.1   | http://www.minix3.org/                               | planned for future.                             |
----------------------------|---------|------------------------------------------------------|------------------------------------------------ |
 
 NOTE: To find the link to the "Atmel Software Framework" you need to register with atmel. You can also try looking at
       [this page](http://spaces.atmel.com/gf/project/asf/frs/?action=&br_pkgrlssort_by=release_name&br_pkgrlssort_order=asc)
