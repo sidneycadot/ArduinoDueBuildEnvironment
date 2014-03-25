@@ -22,7 +22,8 @@ CPPFLAGS = -DMSEC_DELAY=50 \
            -DF_CPU=84000000L -DARDUINO=156 -DARDUINO_SAM_DUE -DARDUINO_ARCH_SAM -D__SAM3X8E__ \
            -DUSB_VID=0x2341 -DUSB_PID=0x003e -DUSBCON -DUSB_MANUFACTURER="\"Unknown\"" -DUSB_PRODUCT="\"Arduino Due\"" \
            -I. \
-           -I$(ASF_DIR)/thirdparty/CMSIS/Include
+           -I$(ASF_DIR)/thirdparty/CMSIS/Include \
+           -I$(ASF_DIR)/sam/utils/cmsis/sam3x/include
 
 #          -I$(ARDUINO_SAM_DIR)/system/libsam
 #          -I$(ARDUINO_SAM_DIR)/system/CMSIS/CMSIS/Include
