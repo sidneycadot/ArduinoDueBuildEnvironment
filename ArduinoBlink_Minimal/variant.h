@@ -35,8 +35,8 @@
 
 #include "Arduino.h"
 #ifdef __cplusplus
-#include "UARTClass.h"
-#include "USARTClass.h"
+//#include "UARTClass.h"
+//#include "USARTClass.h"
 #endif
 
 #ifdef __cplusplus
@@ -226,10 +226,10 @@ static const uint8_t CAN1TX = 89;
 
 #ifdef __cplusplus
 
-extern UARTClass Serial;
-extern USARTClass Serial1;
-extern USARTClass Serial2;
-extern USARTClass Serial3;
+//extern UARTClass Serial;
+//extern USARTClass Serial1;
+//extern USARTClass Serial2;
+//extern USARTClass Serial3;
 
 #endif
 
