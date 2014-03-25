@@ -7,6 +7,8 @@
 
 #ARDUINO_SUPPORT_CODE_DIR = $(ARDUINO_SAM_DIR)/cores/arduino
 
+ASF_DIR = ../xdk-asf-3.15.0
+
 ARM_COMPILER_DIR = ../root/bin
 
 CC      = $(ARM_COMPILER_DIR)/arm-none-eabi-gcc
@@ -19,7 +21,8 @@ CPPFLAGS = -DMSEC_DELAY=50 \
            -Dprintf=iprintf \
            -DF_CPU=84000000L -DARDUINO=156 -DARDUINO_SAM_DUE -DARDUINO_ARCH_SAM -D__SAM3X8E__ \
            -DUSB_VID=0x2341 -DUSB_PID=0x003e -DUSBCON -DUSB_MANUFACTURER="\"Unknown\"" -DUSB_PRODUCT="\"Arduino Due\"" \
-           -I.
+           -I. \
+           -I$(ASF_DIR)/thirdparty/CMSIS/Include
 
 #          -I$(ARDUINO_SAM_DIR)/system/libsam
 #          -I$(ARDUINO_SAM_DIR)/system/CMSIS/CMSIS/Include
@@ -51,7 +54,7 @@ Blink.elf : $(OBJS)
 	$(CXX) -Os -Wl,--gc-sections -mcpu=cortex-m3 -Tflash.ld -Wl,-Map,Blink.map -o Blink.elf \
 	-lm -lgcc -mthumb \
 	-Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--warn-unresolved-symbols \
-	-Wl,--start-group $(OBJS) -Wl,--end-group
+	-Wl,--start-group $(OBJS) libsam_sam3x8e_gcc_rel.a -Wl,--end-group
 
 main.o            : main.cpp
 Blink.o           : Blink.cpp
