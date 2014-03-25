@@ -30,10 +30,8 @@ CXXFLAGS = -g -Os -w -ffunction-sections -fdata-sections -nostdlib --param max-i
 
 OBJS = Blink.o \
        syscalls_sam3.o \
-       wiring_shift.o \
        iar_calls_sam3.o \
        cortex_handlers.o \
-       hooks.o \
        wiring.o \
        wiring_digital.o \
        Reset.o \
@@ -68,8 +66,6 @@ wiring_shift.o    : wiring_shift.c
 iar_calls_sam3.o  : iar_calls_sam3.c
 cortex_handlers.o : cortex_handlers.c
 wiring_digital.o  : wiring_digital.c
-hooks.o           : hooks.c
-WInterrupts.o     : WInterrupts.c
 wiring.o          : wiring.c
 Reset.o         : Reset.cpp
 cxxabi-compat.o : cxxabi-compat.cpp
@@ -82,4 +78,4 @@ program: Blink.bin
 	$(BOSSAC) -i --port=ttyACM0 -U false -e -w -v -b Blink.bin -R
 
 clean :
-	$(RM) $(OBJS) *~ Blink.elf Blink.bin Blink.map
+	$(RM) $(OBJS) *~ Blink.elf Blink.bin Blink.map *.o

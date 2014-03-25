@@ -191,7 +191,7 @@ extern const PinDescription g_APinDescription[] ;
 #include "wiring.h"
 #include "wiring_digital.h"
 //#include "wiring_analog.h"
-#include "wiring_shift.h"
+//#include "wiring_shift.h"
 //#include "WInterrupts.h"
 
 // USB Device
