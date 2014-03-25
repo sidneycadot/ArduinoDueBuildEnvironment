@@ -12,7 +12,7 @@ OBJCOPY = $(ARM_COMPILER_DIR)/arm-none-eabi-objcopy
 
 BOSSAC  = bin/bossac
 
-CPPFLAGS = -DMSEC_DELAY=100 \
+CPPFLAGS = -DMSEC_DELAY=1000 \
            -Dprintf=iprintf \
            -DF_CPU=84000000L -DARDUINO=156 -DARDUINO_SAM_DUE -DARDUINO_ARCH_SAM -D__SAM3X8E__ \
            -I. \
@@ -22,12 +22,8 @@ CPPFLAGS = -DMSEC_DELAY=100 \
 CFLAGS   = -g -Os -w -ffunction-sections -fdata-sections -nostdlib --param max-inline-insns-single=500 -mcpu=cortex-m3 -mthumb
 CXXFLAGS = -g -Os -w -ffunction-sections -fdata-sections -nostdlib --param max-inline-insns-single=500 -mcpu=cortex-m3 -mthumb -fno-rtti -fno-exceptions
 
-OBJS =                   \
-       Blink.o           \
+OBJS = Blink.o           \
        Reset.o           \
-       wiring.o          \
-       wiring_digital.o  \
-       variant.o         \
        hooks.o           \
        syscalls_sam3.o   \
        cortex_handlers.o \
@@ -42,16 +38,12 @@ Blink.bin : Blink.elf
 	$(OBJCOPY) -O binary Blink.elf Blink.bin
 
 Blink.elf : $(OBJS)
-	$(CXX) -Os -Wl,--gc-sections -mcpu=cortex-m3 -T$(LINKER_SCRIPT) -Wl,-Map,Blink.map -o Blink.elf \
-	-lm -lgcc -mthumb \
+	$(CXX) -Os -Wl,--gc-sections -mcpu=cortex-m3 -mthumb -T$(LINKER_SCRIPT) -Wl,-Map,Blink.map -o Blink.elf \
 	-Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--warn-unresolved-symbols \
 	-Wl,--start-group $(OBJS) libsam_sam3x8e_gcc_rel.a -Wl,--end-group
 
 Blink.o           : Blink.cpp
 Reset.o           : Reset.cpp
-wiring.o          : wiring.c
-wiring_digital.o  : wiring_digital.c
-variant.o         : variant.cpp
 hooks.o           : hooks.c
 syscalls_sam3.o   : syscalls_sam3.c
 cortex_handlers.o : cortex_handlers.c
