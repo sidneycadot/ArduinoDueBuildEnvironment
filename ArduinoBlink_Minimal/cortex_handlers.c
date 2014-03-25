@@ -17,7 +17,7 @@
 */
 
 #include "Arduino.h"
-#include "Reset.h"
+//#include "Reset.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -124,4 +124,3 @@ void CAN1_Handler       (void) __attribute__ ((weak, alias("__halt")));
 #ifdef __cplusplus
 }
 #endif
-
