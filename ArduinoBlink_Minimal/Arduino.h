@@ -28,10 +28,10 @@
 // some libraries and sketches depend on this
 // AVR stuff, assuming Arduino.h or WProgram.h
 // automatically includes it...
-#include <avr/pgmspace.h>
-#include <avr/interrupt.h>
+//#include <avr/pgmspace.h>
+//#include <avr/interrupt.h>
 
-#include "binary.h"
+//#include "binary.h"
 //#include "itoa.h"
 
 #ifdef __cplusplus
@@ -195,10 +195,10 @@ extern const PinDescription g_APinDescription[] ;
 //#include "WInterrupts.h"
 
 // USB Device
-#define USB_VID            0x2341 // arduino LLC vid
-#define USB_PID_LEONARDO   0x0034
-#define USB_PID_MICRO      0x0035
-#define USB_PID_DUE        0x003E
+//#define USB_VID            0x2341 // arduino LLC vid
+//#define USB_PID_LEONARDO   0x0034
+//#define USB_PID_MICRO      0x0035
+//#define USB_PID_DUE        0x003E
 //#include "USB/USBDesc.h"
 //#include "USB/USBCore.h"
 //#include "USB/USBAPI.h"
