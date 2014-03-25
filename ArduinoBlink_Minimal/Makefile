@@ -30,7 +30,7 @@ CXXFLAGS = -g -Os -w -ffunction-sections -fdata-sections -nostdlib --param max-i
 
 OBJS = Blink.o \
        itoa.o wiring_analog.o syscalls_sam3.o dtostrf.o wiring_shift.o iar_calls_sam3.o cortex_handlers.o wiring_digital.o hooks.o WInterrupts.o wiring.o \
-       Reset.o Print.o CDC.o HID.o USBCore.o WString.o cxxabi-compat.o main.o Stream.o wiring_pulse.o WMath.o \
+       Reset.o WString.o cxxabi-compat.o main.o wiring_pulse.o WMath.o \
        variant.o
 
 check : Blink.bin
@@ -66,14 +66,9 @@ WInterrupts.o     : WInterrupts.c
 wiring.o          : wiring.c
 
 Reset.o         : Reset.cpp
-Print.o         : Print.cpp
-CDC.o           : CDC.cpp
-HID.o           : HID.cpp
-USBCore.o       : USBCore.cpp
 WString.o       : WString.cpp
 cxxabi-compat.o : cxxabi-compat.cpp
 main.o          : main.cpp
-Stream.o        : Stream.cpp
 wiring_pulse.o  : wiring_pulse.cpp
 WMath.o         : WMath.cpp
 

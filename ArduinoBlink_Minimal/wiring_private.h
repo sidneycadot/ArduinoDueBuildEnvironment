@@ -35,7 +35,7 @@ extern "C"{
 #ifdef __cplusplus
 } // extern "C"
 
-#include "HardwareSerial.h"
+//#include "HardwareSerial.h"
 
 #endif
 
