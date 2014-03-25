@@ -24,6 +24,7 @@ CXXFLAGS = -g -Os -w -ffunction-sections -fdata-sections -nostdlib --param max-i
 
 OBJS =                   \
        Blink.o           \
+       Reset.o           \
        wiring.o          \
        wiring_digital.o  \
        variant.o         \
@@ -47,6 +48,7 @@ Blink.elf : $(OBJS)
 	-Wl,--start-group $(OBJS) libsam_sam3x8e_gcc_rel.a -Wl,--end-group
 
 Blink.o           : Blink.cpp
+Reset.o           : Reset.cpp
 wiring.o          : wiring.c
 wiring_digital.o  : wiring_digital.c
 variant.o         : variant.cpp
