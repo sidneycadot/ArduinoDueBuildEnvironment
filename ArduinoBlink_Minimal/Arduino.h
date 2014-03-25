@@ -32,7 +32,7 @@
 #include <avr/interrupt.h>
 
 #include "binary.h"
-#include "itoa.h"
+//#include "itoa.h"
 
 #ifdef __cplusplus
 extern "C"{
@@ -176,8 +176,8 @@ extern const PinDescription g_APinDescription[] ;
 #ifdef __cplusplus
 } // extern "C"
 
-#include "WCharacter.h"
-#include "WString.h"
+//#include "WCharacter.h"
+//#include "WString.h"
 #include "Tone.h"
 #include "WMath.h"
 //#include "HardwareSerial.h"

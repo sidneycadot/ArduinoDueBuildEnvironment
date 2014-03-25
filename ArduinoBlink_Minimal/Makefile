@@ -29,8 +29,8 @@ CFLAGS   = -g -Os -w -ffunction-sections -fdata-sections -nostdlib --param max-i
 CXXFLAGS = -g -Os -w -ffunction-sections -fdata-sections -nostdlib --param max-inline-insns-single=500 -mcpu=cortex-m3 -mthumb -fno-rtti -fno-exceptions
 
 OBJS = Blink.o \
-       itoa.o wiring_analog.o syscalls_sam3.o dtostrf.o wiring_shift.o iar_calls_sam3.o cortex_handlers.o wiring_digital.o hooks.o WInterrupts.o wiring.o \
-       Reset.o WString.o cxxabi-compat.o main.o wiring_pulse.o WMath.o \
+       wiring_analog.o syscalls_sam3.o wiring_shift.o iar_calls_sam3.o cortex_handlers.o wiring_digital.o hooks.o WInterrupts.o wiring.o \
+       Reset.o cxxabi-compat.o main.o wiring_pulse.o WMath.o \
        variant.o
 
 check : Blink.bin
@@ -53,10 +53,8 @@ Blink.elf : $(OBJS)
 
 Blink.o : Blink.cpp
 
-itoa.o            : itoa.c
 wiring_analog.o   : wiring_analog.c
 syscalls_sam3.o   : syscalls_sam3.c
-dtostrf.o         : dtostrf.c
 wiring_shift.o    : wiring_shift.c
 iar_calls_sam3.o  : iar_calls_sam3.c
 cortex_handlers.o : cortex_handlers.c
@@ -66,7 +64,6 @@ WInterrupts.o     : WInterrupts.c
 wiring.o          : wiring.c
 
 Reset.o         : Reset.cpp
-WString.o       : WString.cpp
 cxxabi-compat.o : cxxabi-compat.cpp
 main.o          : main.cpp
 wiring_pulse.o  : wiring_pulse.cpp
