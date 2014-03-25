@@ -440,7 +440,7 @@ void init( void )
   adc_disable_all_channel(ADC);
 
   // Initialize analogOutput module
-  analogOutputInit();
+  //analogOutputInit();
 }
 
 #ifdef __cplusplus
