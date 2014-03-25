@@ -51,7 +51,7 @@ Blink.elf : $(OBJS)
 	$(CXX) -Os -Wl,--gc-sections -mcpu=cortex-m3 -Tflash.ld -Wl,-Map,Blink.map -o Blink.elf \
 	-lm -lgcc -mthumb \
 	-Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--warn-unresolved-symbols \
-	-Wl,--start-group $(OBJS) libsam_sam3x8e_gcc_rel.a -Wl,--end-group
+	-Wl,--start-group $(OBJS) -Wl,--end-group
 
 main.o            : main.cpp
 Blink.o           : Blink.cpp
