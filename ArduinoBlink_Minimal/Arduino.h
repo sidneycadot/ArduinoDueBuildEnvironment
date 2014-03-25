@@ -179,7 +179,7 @@ extern const PinDescription g_APinDescription[] ;
 //#include "WCharacter.h"
 //#include "WString.h"
 #include "Tone.h"
-#include "WMath.h"
+//#include "WMath.h"
 //#include "HardwareSerial.h"
 #include "wiring_pulse.h"
 
@@ -192,7 +192,7 @@ extern const PinDescription g_APinDescription[] ;
 #include "wiring_digital.h"
 //#include "wiring_analog.h"
 #include "wiring_shift.h"
-#include "WInterrupts.h"
+//#include "WInterrupts.h"
 
 // USB Device
 #define USB_VID            0x2341 // arduino LLC vid

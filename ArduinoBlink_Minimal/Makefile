@@ -29,8 +29,17 @@ CFLAGS   = -g -Os -w -ffunction-sections -fdata-sections -nostdlib --param max-i
 CXXFLAGS = -g -Os -w -ffunction-sections -fdata-sections -nostdlib --param max-inline-insns-single=500 -mcpu=cortex-m3 -mthumb -fno-rtti -fno-exceptions
 
 OBJS = Blink.o \
-       syscalls_sam3.o wiring_shift.o iar_calls_sam3.o cortex_handlers.o hooks.o WInterrupts.o wiring.o \
-       Reset.o cxxabi-compat.o main.o wiring_pulse.o WMath.o \
+       syscalls_sam3.o \
+       wiring_shift.o \
+       iar_calls_sam3.o \
+       cortex_handlers.o \
+       hooks.o \
+       wiring.o \
+       wiring_digital.o \
+       Reset.o \
+       cxxabi-compat.o \
+       main.o \
+       wiring_pulse.o \
        variant.o
 
 check : Blink.bin
@@ -62,13 +71,10 @@ wiring_digital.o  : wiring_digital.c
 hooks.o           : hooks.c
 WInterrupts.o     : WInterrupts.c
 wiring.o          : wiring.c
-
 Reset.o         : Reset.cpp
 cxxabi-compat.o : cxxabi-compat.cpp
 main.o          : main.cpp
 wiring_pulse.o  : wiring_pulse.cpp
-WMath.o         : WMath.cpp
-
 variant.o       : variant.cpp
 
 program: Blink.bin
