@@ -41,7 +41,6 @@ OBJS =                   \
        variant.o         \
        hooks.o           \
        syscalls_sam3.o   \
-       iar_calls_sam3.o  \
        cortex_handlers.o \
        cxxabi-compat.o
 
@@ -65,7 +64,6 @@ wiring_digital.o  : wiring_digital.c
 variant.o         : variant.cpp
 hooks.o           : hooks.c
 syscalls_sam3.o   : syscalls_sam3.c
-iar_calls_sam3.o  : iar_calls_sam3.c
 cortex_handlers.o : cortex_handlers.c
 cxxabi-compat.o   : cxxabi-compat.cpp
 
