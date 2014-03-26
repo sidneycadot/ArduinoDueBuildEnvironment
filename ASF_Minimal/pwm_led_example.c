@@ -109,7 +109,7 @@ int main(void)
     {
         .ul_clka = PWM_FREQUENCY * PERIOD_VALUE,
         .ul_clkb = 0,
-        .ul_mck = sysclk_get_cpu_hz()
+        .ul_mck  = sysclk_get_cpu_hz()
     };
 
     pwm_init(PWM, &clock_setting);
