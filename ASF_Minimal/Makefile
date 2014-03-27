@@ -145,7 +145,7 @@ pwm_led_example_flash.elf : pwm_led_example.o libasf.a syscalls.o
 	       -Wl,--entry=Reset_Handler \
 	       -Wl,--script=$(ASF_DIR)/sam/utils/linker_scripts/sam3x/sam3x8/gcc/flash.ld \
 	       -L$(ASF_DIR)/thirdparty/CMSIS/Lib/GCC \
-	        pwm_led_example.o libasf.a -larm_cortexM3l_math -lm -o $@
+	        pwm_led_example.o syscalls.o libasf.a -larm_cortexM3l_math -lm -o $@
 
 # show info
 #
