@@ -29,14 +29,14 @@ pwm_channel_t g_pwm_channel_led;
 void PWM_Handler(void)
 {
     static uint32_t ul_count = 0;               // PWM counter value
-    static uint32_t ul_duty = INIT_DUTY_VALUE;  // PWM duty cycle rate
-    static uint8_t fade_in = 1;                 // LED fade in flag
+    static uint32_t ul_duty  = INIT_DUTY_VALUE; // PWM duty cycle rate
+    static uint8_t fade_in   = 1;               // LED fade in flag
 
     uint32_t events = pwm_channel_get_interrupt_status(PWM);
 
     // Interrupt on PIN_PWM_LED0_CHANNEL
 
-    if ((events & (1 << PIN_PWM_LED0_CHANNEL)) == (1 << PIN_PWM_LED0_CHANNEL))
+    if ((events & (1 << PIN_PWM_LED0_CHANNEL)) != 0)
     {
         ++ul_count;
 
@@ -77,7 +77,7 @@ static void configure_console(void)
 {
     const usart_serial_options_t uart_serial_options =
     {
-        .baudrate = CONF_UART_BAUDRATE,
+        .baudrate   = CONF_UART_BAUDRATE,
         .paritytype = CONF_UART_PARITY
     };
 
@@ -117,18 +117,20 @@ int main(void)
     {
         .ul_clka = PWM_FREQUENCY * PERIOD_VALUE,
         .ul_clkb = 0,
-        .ul_mck = sysclk_get_cpu_hz()
+        .ul_mck  = sysclk_get_cpu_hz()
     };
+
     pwm_init(PWM, &clock_setting);
 
     // Initialize PWM channel for LED0
 
-    g_pwm_channel_led.alignment = PWM_ALIGN_LEFT;       // Period is left-aligned
-    g_pwm_channel_led.polarity = PWM_LOW;               // Output waveform starts at a low level
-    g_pwm_channel_led.ul_prescaler = PWM_CMR_CPRE_CLKA; // Use PWM clock A as source clock
-    g_pwm_channel_led.ul_period = PERIOD_VALUE;         // Period value of output waveform
-    g_pwm_channel_led.ul_duty = INIT_DUTY_VALUE;        // Duty cycle value of output waveform
-    g_pwm_channel_led.channel = PIN_PWM_LED0_CHANNEL;
+    g_pwm_channel_led.alignment    = PWM_ALIGN_LEFT;       // Period is left-aligned
+    g_pwm_channel_led.polarity     = PWM_LOW;              // Output waveform starts at a low level
+    g_pwm_channel_led.ul_prescaler = PWM_CMR_CPRE_CLKA;    // Use PWM clock A as source clock
+    g_pwm_channel_led.ul_period    = PERIOD_VALUE;         // Period value of output waveform
+    g_pwm_channel_led.ul_duty      = INIT_DUTY_VALUE;      // Duty cycle value of output waveform
+    g_pwm_channel_led.channel      = PIN_PWM_LED0_CHANNEL;
+
     pwm_channel_init(PWM, &g_pwm_channel_led);
 
     // Enable channel counter event interrupt
@@ -137,12 +139,13 @@ int main(void)
 
     // Initialize PWM channel for LED1
 
-    g_pwm_channel_led.alignment = PWM_ALIGN_CENTER;     // Period is center-aligned
-    g_pwm_channel_led.polarity = PWM_HIGH;              // Output waveform starts at a high level
-    g_pwm_channel_led.ul_prescaler = PWM_CMR_CPRE_CLKA; // Use PWM clock A as source clock
-    g_pwm_channel_led.ul_period = PERIOD_VALUE;         // Period value of output waveform
-    g_pwm_channel_led.ul_duty = INIT_DUTY_VALUE;        // Duty cycle value of output waveform
-    g_pwm_channel_led.channel = PIN_PWM_LED1_CHANNEL;
+    g_pwm_channel_led.alignment    = PWM_ALIGN_CENTER;     // Period is center-aligned
+    g_pwm_channel_led.polarity     = PWM_HIGH;             // Output waveform starts at a high level
+    g_pwm_channel_led.ul_prescaler = PWM_CMR_CPRE_CLKA;    // Use PWM clock A as source clock
+    g_pwm_channel_led.ul_period    = PERIOD_VALUE;         // Period value of output waveform
+    g_pwm_channel_led.ul_duty      = INIT_DUTY_VALUE;      // Duty cycle value of output waveform
+    g_pwm_channel_led.channel      = PIN_PWM_LED1_CHANNEL;
+
     pwm_channel_init(PWM, &g_pwm_channel_led);
 
     // Disable channel counter event interrupt
@@ -163,7 +166,9 @@ int main(void)
 
     // Infinite loop
 
-    while (1) {
+    for (unsigned i = 0;; ++i)
+    {
         puts("sidney\r\n");
+        //printf("sidney: %u\r\n", i);
     }
 }

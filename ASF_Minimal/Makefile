@@ -45,7 +45,6 @@ CPPFLAGS = \
         -I$(ASF_DIR)/sam/drivers/pio                        \
         -I$(ASF_DIR)/sam/drivers/pmc                        \
         -I$(ASF_DIR)/sam/drivers/pwm                        \
-        -I.                                                 \
         -I$(ASF_DIR)/sam/drivers/uart                       \
         -I$(ASF_DIR)/sam/drivers/usart                      \
         -I$(ASF_DIR)/sam/utils                              \
@@ -54,7 +53,8 @@ CPPFLAGS = \
         -I$(ASF_DIR)/sam/utils/header_files                 \
         -I$(ASF_DIR)/sam/utils/preprocessor                 \
         -I$(ASF_DIR)/thirdparty/CMSIS/Include               \
-        -I$(ASF_DIR)/thirdparty/CMSIS/Lib/GCC
+        -I$(ASF_DIR)/thirdparty/CMSIS/Lib/GCC               \
+        -I.
 
 LIBASF_OBJS =                 \
         sysclk.o              \
@@ -76,7 +76,6 @@ LIBASF_OBJS =                 \
         syscalls.o
 
 default : pwm_led_example_flash.bin pwm_led_example_sram.bin
-
 	# show hashes
 	md5sum $^
 
