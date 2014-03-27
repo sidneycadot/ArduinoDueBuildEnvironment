@@ -9,10 +9,12 @@ TOOLCHAIN_PROGRAM_PREFIX=arm-none-eabi-
 CC      = $(TOOLCHAIN_BIN_DIR)/$(TOOLCHAIN_PROGRAM_PREFIX)gcc
 CXX     = $(TOOLCHAIN_BIN_DIR)/$(TOOLCHAIN_PROGRAM_PREFIX)g++
 NM      = $(TOOLCHAIN_BIN_DIR)/$(TOOLCHAIN_PROGRAM_PREFIX)nm
+SIZE    = $(TOOLCHAIN_BIN_DIR)/$(TOOLCHAIN_PROGRAM_PREFIX)size
+AR      = $(TOOLCHAIN_BIN_DIR)/$(TOOLCHAIN_PROGRAM_PREFIX)ar
 OBJCOPY = $(TOOLCHAIN_BIN_DIR)/$(TOOLCHAIN_PROGRAM_PREFIX)objcopy
 OBJDUMP = $(TOOLCHAIN_BIN_DIR)/$(TOOLCHAIN_PROGRAM_PREFIX)objdump
 
-CFLAGS = -O1 -mcpu=cortex-m3 -mthumb -g3\
+CFLAGS = -O1 -mcpu=cortex-m3 -mthumb -g3 \
         -pipe \
         -std=gnu99 \
         -fno-strict-aliasing -ffunction-sections -fdata-sections \
@@ -53,8 +55,6 @@ CPPFLAGS = \
         -I$(ASF_DIR)/sam/utils/preprocessor                 \
         -I$(ASF_DIR)/thirdparty/CMSIS/Include               \
         -I$(ASF_DIR)/thirdparty/CMSIS/Lib/GCC
-
-#        -I$(ASF_DIR)/sam/drivers/pwm/pwm_led_example/sam3x8e_arduino_due_x/gcc
 
 LIBASF_OBJS =                 \
         sysclk.o              \
@@ -133,13 +133,20 @@ system_sam3x.o : $(ASF_DIR)/sam/utils/cmsis/sam3x/source/templates/system_sam3x.
 syscalls.o : $(ASF_DIR)/sam/utils/syscalls/gcc/syscalls.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
+######################################################### libasf
+
+libasf.a : $(LIBASF_OBJS)
+	$(AR) rcs $@ $^
+
 ######################################################### Main program
 
 pwm_led_example.o : pwm_led_example.c
 
 ######################################################### make FLASH version
 
-pwm_led_example_flash.elf : $(LIBASF_OBJS) pwm_led_example.o
+# TODO: find out why we need to include syscalls.o explicitly. Why doesn't the linker use the version in libasf.a ??
+
+pwm_led_example_flash.elf : libasf.a syscalls.o pwm_led_example.o
 
 	$(CXX) -Wl,--entry=Reset_Handler \
 	       -mcpu=cortex-m3 \
@@ -147,12 +154,9 @@ pwm_led_example_flash.elf : $(LIBASF_OBJS) pwm_led_example.o
 	       -Wl,--gc-sections \
 	       -Wl,--script $(ASF_DIR)/sam/utils/linker_scripts/sam3x/sam3x8/gcc/flash.ld \
 	       -L$(ASF_DIR)/thirdparty/CMSIS/Lib/GCC \
-	       $(LIBASF_OBJS) pwm_led_example.o -larm_cortexM3l_math -lm -o $@
-
-# show info
-
-#	arm-none-eabi-size -Ax pwm_led_example_flash.elf
-#	arm-none-eabi-size -Bx pwm_led_example_flash.elf
+	       pwm_led_example.o libasf.a syscalls.o -larm_cortexM3l_math -lm -o $@
+	#$(SIZE) -Ax pwm_led_example_flash.elf
+	#$(SIZE) -Bx pwm_led_example_flash.elf
 
 pwm_led_example_flash.lss : pwm_led_example_flash.elf
 
@@ -172,7 +176,9 @@ pwm_led_example_flash.bin : pwm_led_example_flash.elf
 
 ############################################################ make SRAM version
 
-pwm_led_example_sram.elf : $(LIBASF_OBJS) pwm_led_example.o
+# TODO: find out why we need to include syscalls.o explicitly. Why doesn't the linker use the version in libasf.a ??
+
+pwm_led_example_sram.elf : libasf.a syscalls.o pwm_led_example.o
 
 	$(CXX) -Wl,--entry=Reset_Handler \
 	       -mcpu=cortex-m3 \
@@ -180,12 +186,9 @@ pwm_led_example_sram.elf : $(LIBASF_OBJS) pwm_led_example.o
 	       -Wl,--gc-sections \
 	       -Wl,--script $(ASF_DIR)/sam/utils/linker_scripts/sam3x/sam3x8/gcc/sram.ld \
 	       -L$(ASF_DIR)/thirdparty/CMSIS/Lib/GCC \
-	       $(LIBASF_OBJS) pwm_led_example.o -larm_cortexM3l_math -lm -o $@
-
-# show info
-
-#	arm-none-eabi-size -Ax pwm_led_example_sram.elf
-#	arm-none-eabi-size -Bx pwm_led_example_sram.elf
+	       pwm_led_example.o libasf.a syscalls.o -larm_cortexM3l_math -lm -o $@
+	#$(SIZE) -Ax $@
+	#$(SIZE) -Bx $@
 
 pwm_led_example_sram.lss : pwm_led_example_sram.elf
 
@@ -207,20 +210,13 @@ pwm_led_example_sram.bin : pwm_led_example_sram.elf
 
 program : pwm_led_example_flash.bin
 	../bin/reset_due.py
-	sleep 0.1
+	sleep 0.5
 	../bin/arduino-bossac -i --port=ttyACM0 -U false -e -w -v -b $< -R
 
 ############################################################ clean
 
 clean :
 	$(RM) *.o
-	$(RM) pwm_led_example_flash.bin
-	$(RM) pwm_led_example_flash.elf
-	$(RM) pwm_led_example_flash.hex
-	$(RM) pwm_led_example_flash.lss
-	$(RM) pwm_led_example_flash.sym
-	$(RM) pwm_led_example_sram.bin
-	$(RM) pwm_led_example_sram.elf
-	$(RM) pwm_led_example_sram.hex
-	$(RM) pwm_led_example_sram.lss
-	$(RM) pwm_led_example_sram.sym
+	$(RM) libasf.a
+	$(RM) pwm_led_example_flash.elf $(RM) pwm_led_example_flash.bin $(RM) pwm_led_example_flash.hex $(RM) pwm_led_example_flash.lss $(RM) pwm_led_example_flash.sym
+	$(RM) pwm_led_example_sram.elf  $(RM) pwm_led_example_sram.bin  $(RM) pwm_led_example_sram.hex  $(RM) pwm_led_example_sram.lss  $(RM) pwm_led_example_sram.sym
