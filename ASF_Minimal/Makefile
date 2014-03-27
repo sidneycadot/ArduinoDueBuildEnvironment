@@ -5,7 +5,7 @@ ASF_DIR = ../xdk-asf-3.15.0
 
 CC = arm-none-eabi-gcc
 
-CFLAGS = -O1 -mcpu=cortex-m3 -mthumb -D=__sam3x8e__  -g3 \
+CFLAGS = -O1 -mcpu=cortex-m3 -mthumb -D=__sam3x8e__ -g3 \
         -pipe \
         -Wall -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith \
         -std=gnu99 \
@@ -59,7 +59,10 @@ OBJS = common/services/clock/sam3x/sysclk.o                       \
        sam/utils/cmsis/sam3x/source/templates/system_sam3x.o      \
        sam/utils/syscalls/gcc/syscalls.o
 
-default : pwm_pwm_led_example_flash.bin pwm_pwm_led_example_sram.bin
+default : pwm_led_example_flash.bin pwm_led_example_sram.bin
+
+	# show hashes
+	md5sum $^
 
 common/services/clock/sam3x/sysclk.o : $(ASF_DIR)/common/services/clock/sam3x/sysclk.c subdirs
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
@@ -118,61 +121,57 @@ pwm_led_example.o : pwm_led_example.c
 
 ######################################################### make FLASH version
 
-pwm_pwm_led_example_flash.elf : $(OBJS)
+pwm_led_example_flash.elf : $(OBJS)
 
-	arm-none-eabi-g++ -Wl,--entry=Reset_Handler -Wl,--cref -mcpu=cortex-m3 -mthumb -pipe -Wl,--gc-sections -Wl,-T $(ASF_DIR)/sam/utils/linker_scripts/sam3x/sam3x8/gcc/flash.ld -Wl,-Map=pwm_pwm_led_example_flash.map,--cref -L$(ASF_DIR)/thirdparty/CMSIS/Lib/GCC $(OBJS) -larm_cortexM3l_math -lm -o $@
+	arm-none-eabi-g++ -Wl,--entry=Reset_Handler -Wl,--cref -mcpu=cortex-m3 -mthumb -pipe -Wl,--gc-sections -Wl,-T $(ASF_DIR)/sam/utils/linker_scripts/sam3x/sam3x8/gcc/flash.ld -Wl,-Map=pwm_led_example_flash.map,--cref -L$(ASF_DIR)/thirdparty/CMSIS/Lib/GCC $(OBJS) -larm_cortexM3l_math -lm -o $@
 
-	# show info
+# show info
 
-	#arm-none-eabi-size -Ax pwm_pwm_led_example_flash.elf
-	#arm-none-eabi-size -Bx pwm_pwm_led_example_flash.elf
+#arm-none-eabi-size -Ax pwm_led_example_flash.elf
+#arm-none-eabi-size -Bx pwm_led_example_flash.elf
 
-pwm_pwm_led_example_flash.lss : pwm_pwm_led_example_flash.elf
+pwm_led_example_flash.lss : pwm_led_example_flash.elf
 
-	arm-none-eabi-objdump -h -S pwm_pwm_led_example_flash.elf > pwm_pwm_led_example_flash.lss
+	arm-none-eabi-objdump -h -S pwm_led_example_flash.elf > pwm_led_example_flash.lss
 
-pwm_pwm_led_example_flash.sym : pwm_pwm_led_example_flash.elf
+pwm_led_example_flash.sym : pwm_led_example_flash.elf
 
-	arm-none-eabi-nm -n pwm_pwm_led_example_flash.elf > pwm_pwm_led_example_flash.sym
+	arm-none-eabi-nm -n pwm_led_example_flash.elf > pwm_led_example_flash.sym
 
-pwm_pwm_led_example_flash.hex : pwm_pwm_led_example_flash.elf
+pwm_led_example_flash.hex : pwm_led_example_flash.elf
 
-	arm-none-eabi-objcopy -O ihex   pwm_pwm_led_example_flash.elf pwm_pwm_led_example_flash.hex
+	arm-none-eabi-objcopy -O ihex   pwm_led_example_flash.elf pwm_led_example_flash.hex
 
-pwm_pwm_led_example_flash.bin : pwm_pwm_led_example_flash.elf
+pwm_led_example_flash.bin : pwm_led_example_flash.elf
 
-	arm-none-eabi-objcopy -O binary pwm_pwm_led_example_flash.elf pwm_pwm_led_example_flash.bin
+	arm-none-eabi-objcopy -O binary pwm_led_example_flash.elf pwm_led_example_flash.bin
 
 ######################################################### make SRAM version
 
-pwm_pwm_led_example_sram.elf : $(OBJS)
+pwm_led_example_sram.elf : $(OBJS)
 
-	arm-none-eabi-g++ -Wl,--entry=Reset_Handler -Wl,--cref -mcpu=cortex-m3 -mthumb -pipe -Wl,--gc-sections -Wl,-T $(ASF_DIR)/sam/utils/linker_scripts/sam3x/sam3x8/gcc/sram.ld -Wl,-Map=pwm_pwm_led_example_sram.map,--cref -L$(ASF_DIR)/thirdparty/CMSIS/Lib/GCC $(OBJS) -larm_cortexM3l_math -lm -o $@
+	arm-none-eabi-g++ -Wl,--entry=Reset_Handler -Wl,--cref -mcpu=cortex-m3 -mthumb -pipe -Wl,--gc-sections -Wl,-T $(ASF_DIR)/sam/utils/linker_scripts/sam3x/sam3x8/gcc/sram.ld -Wl,-Map=pwm_led_example_sram.map,--cref -L$(ASF_DIR)/thirdparty/CMSIS/Lib/GCC $(OBJS) -larm_cortexM3l_math -lm -o $@
 
-	# show info
+# show info
 
-	#arm-none-eabi-size -Ax pwm_pwm_led_example_sram.elf
-	#arm-none-eabi-size -Bx pwm_pwm_led_example_sram.elf
+#	arm-none-eabi-size -Ax pwm_led_example_sram.elf
+#	arm-none-eabi-size -Bx pwm_led_example_sram.elf
 
-pwm_pwm_led_example_sram.lss :
+pwm_led_example_sram.lss :
 
-	arm-none-eabi-objdump -h -S pwm_pwm_led_example_sram.elf > pwm_pwm_led_example_sram.lss
+	arm-none-eabi-objdump -h -S pwm_led_example_sram.elf > pwm_led_example_sram.lss
 
-pwm_pwm_led_example_sram.sym : pwm_pwm_led_example_sram.elf
+pwm_led_example_sram.sym : pwm_led_example_sram.elf
 
-	arm-none-eabi-nm -n pwm_pwm_led_example_sram.elf > pwm_pwm_led_example_sram.sym
+	arm-none-eabi-nm -n pwm_led_example_sram.elf > pwm_led_example_sram.sym
 
-pwm_pwm_led_example_sram.hex : pwm_pwm_led_example_sram.elf
+pwm_led_example_sram.hex : pwm_led_example_sram.elf
 
-	arm-none-eabi-objcopy -O ihex   pwm_pwm_led_example_sram.elf pwm_pwm_led_example_sram.hex
+	arm-none-eabi-objcopy -O ihex   pwm_led_example_sram.elf pwm_led_example_sram.hex
 
-pwm_pwm_led_example_sram.bin : pwm_pwm_led_example_sram.elf
+pwm_led_example_sram.bin : pwm_led_example_sram.elf
 
-	arm-none-eabi-objcopy -O binary pwm_pwm_led_example_sram.elf pwm_pwm_led_example_sram.bin
-
-	# Hashes
-
-	md5sum *.bin
+	arm-none-eabi-objcopy -O binary pwm_led_example_sram.elf pwm_led_example_sram.bin
 
 subdirs :
 	test -d common/services/clock/sam3x                || mkdir -p common/services/clock/sam3x
@@ -189,24 +188,24 @@ subdirs :
 	test -d sam/utils/cmsis/sam3x/source/templates     || mkdir -p sam/utils/cmsis/sam3x/source/templates
 	test -d sam/utils/syscalls/gcc                     || mkdir -p sam/utils/syscalls/gcc
 
-program : pwm_pwm_led_example_flash.bin
-	./reset_due.py
-	../ArduinoBlink_Minimal/bin/bossac -i --port=ttyACM0 -U false -e -w -v -b pwm_pwm_led_example_flash.bin -R
+program : pwm_led_example_flash.bin
+	../bin/reset_due.py
+	../bin/arduino-bossac -i --port=ttyACM0 -U false -e -w -v -b pwm_led_example_flash.bin -R
 
 clean :
 	$(RM) *.o
 	$(RM) -r common
 	$(RM) -r sam
-	$(RM) pwm_pwm_led_example_flash.bin
-	$(RM) pwm_pwm_led_example_flash.elf
-	$(RM) pwm_pwm_led_example_flash.hex
-	$(RM) pwm_pwm_led_example_flash.lss
-	$(RM) pwm_pwm_led_example_flash.map
-	$(RM) pwm_pwm_led_example_flash.sym
-	$(RM) pwm_pwm_led_example_sram.bin
-	$(RM) pwm_pwm_led_example_sram.elf
-	$(RM) pwm_pwm_led_example_sram.hex
-	$(RM) pwm_pwm_led_example_sram.lss
-	$(RM) pwm_pwm_led_example_sram.map
-	$(RM) pwm_pwm_led_example_sram.sym
+	$(RM) pwm_led_example_flash.bin
+	$(RM) pwm_led_example_flash.elf
+	$(RM) pwm_led_example_flash.hex
+	$(RM) pwm_led_example_flash.lss
+	$(RM) pwm_led_example_flash.map
+	$(RM) pwm_led_example_flash.sym
+	$(RM) pwm_led_example_sram.bin
+	$(RM) pwm_led_example_sram.elf
+	$(RM) pwm_led_example_sram.hex
+	$(RM) pwm_led_example_sram.lss
+	$(RM) pwm_led_example_sram.map
+	$(RM) pwm_led_example_sram.sym
 	$(RM) pwm_led_example.d
