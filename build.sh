@@ -64,25 +64,25 @@ ASF_ZIPFILE_URL=http://www.atmel.com/images/$ASF_ZIPFILE
 DOWNLOADS_DIR=$HERE/downloads
 ROOT_DIR=$HERE/root
 
-SOURCE_DIRS=$HERE/source
+SOURCE_DIR=$HERE/source
 
-BINUTILS_SOURCE_DIR=$SOURCE_DIRS/$BINUTILS_DIRNAME
-GCC_SOURCE_DIR=$SOURCE_DIRS/$GCC_DIRNAME
-GMP_SOURCE_DIR=$SOURCE_DIRS/$GMP_DIRNAME
-MPFR_SOURCE_DIR=$SOURCE_DIRS/$MPFR_DIRNAME
-MPC_SOURCE_DIR=$SOURCE_DIRS/$MPC_DIRNAME
-ISL_SOURCE_DIR=$SOURCE_DIRS/$ISL_DIRNAME
-CLOOG_SOURCE_DIR=$SOURCE_DIRS/$CLOOG_DIRNAME
-NEWLIB_SOURCE_DIR=$SOURCE_DIRS/$NEWLIB_DIRNAME
-GDB_SOURCE_DIR=$SOURCE_DIRS/$GDB_DIRNAME
+BINUTILS_SOURCE_DIR=$SOURCE_DIR/$BINUTILS_DIRNAME
+GCC_SOURCE_DIR=$SOURCE_DIR/$GCC_DIRNAME
+GMP_SOURCE_DIR=$SOURCE_DIR/$GMP_DIRNAME
+MPFR_SOURCE_DIR=$SOURCE_DIR/$MPFR_DIRNAME
+MPC_SOURCE_DIR=$SOURCE_DIR/$MPC_DIRNAME
+ISL_SOURCE_DIR=$SOURCE_DIR/$ISL_DIRNAME
+CLOOG_SOURCE_DIR=$SOURCE_DIR/$CLOOG_DIRNAME
+NEWLIB_SOURCE_DIR=$SOURCE_DIR/$NEWLIB_DIRNAME
+GDB_SOURCE_DIR=$SOURCE_DIR/$GDB_DIRNAME
 
-BUILD_DIRS=$HERE/build
+BUILD_DIR=$HERE/build
 
-BINUTILS_BUILD_DIR=$BUILD_DIRS/$BINUTILS_DIRNAME
-GCC_BOOTSTRAP_BUILD_DIR=$BUILD_DIRS/$GCC_DIRNAME-bootstrap
-NEWLIB_BUILD_DIR=$BUILD_DIRS/$NEWLIB_DIRNAME
-GCC_FULL_BUILD_DIR=$BUILD_DIRS/$GCC_DIRNAME-full
-GDB_BUILD_DIR=$BUILD_DIRS/$GDB_DIRNAME
+BINUTILS_BUILD_DIR=$BUILD_DIR/$BINUTILS_DIRNAME
+GCC_BOOTSTRAP_BUILD_DIR=$BUILD_DIR/$GCC_DIRNAME-bootstrap
+NEWLIB_BUILD_DIR=$BUILD_DIR/$NEWLIB_DIRNAME
+GCC_FULL_BUILD_DIR=$BUILD_DIR/$GCC_DIRNAME-full
+GDB_BUILD_DIR=$BUILD_DIR/$GDB_DIRNAME
 
 ######################################## set up option variables
 
@@ -96,16 +96,16 @@ MAKE_OPTS="-j8"
 
 echo "@@@ [all] removing stale directories ..."
 
-rm -rf $SOURCE_DIRS
-rm -rf $BUILD_DIRS
+rm -rf $SOURCE_DIR
+rm -rf $BUILD_DIR
 rm -rf $ROOT_DIR
 
 ########################################
 
 echo "@@@ [all] setting up fresh directories ..."
 
-mkdir $SOURCE_DIRS
-mkdir $BUILD_DIRS
+mkdir $SOURCE_DIR
+mkdir $BUILD_DIR
 mkdir $ROOT_DIR
 
 if [ ! -d $DOWNLOADS_DIR ] ; then
@@ -194,11 +194,11 @@ echo
 
 echo "@@@ [binutils] unpacking source ..."
 
-tar x -C $SOURCE_DIRS -f $DOWNLOADS_DIR/$BINUTILS_TARBALL
+tar x -C $SOURCE_DIR -f $DOWNLOADS_DIR/$BINUTILS_TARBALL
 
 echo "@@@ [binutils] emitting configure help ..."
 
-$BINUTILS_SOURCE_DIR/configure --help > $HERE/ConfigureHelp_binutils.txt
+$BINUTILS_SOURCE_DIR/configure --help > $BUILD_DIR/ConfigureHelp_binutils.txt
 
 echo "@@@ [binutils] configuring in new build directory ..."
 
@@ -216,7 +216,7 @@ make install
 
 echo "@@@ [binutils] creating rootdir index ..."
 
-find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $HERE/md5_after_binutils
+find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $BUILD_DIR/md5_after_binutils
 
 ######################################## build gcc/bootstrap
 
@@ -229,15 +229,15 @@ find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $HERE/md5_after_binutils
 
 echo "@@@ [gcc/bootstrap] unpacking source ..."
 
-tar x -C $SOURCE_DIRS -f $DOWNLOADS_DIR/$GCC_TARBALL
+tar x -C $SOURCE_DIR -f $DOWNLOADS_DIR/$GCC_TARBALL
 
 echo "@@@ [gcc/bootstrap] unpacking source of GCC dependencies ..."
 
-tar x -C $SOURCE_DIRS -f $DOWNLOADS_DIR/$GMP_TARBALL
-tar x -C $SOURCE_DIRS -f $DOWNLOADS_DIR/$MPFR_TARBALL
-tar x -C $SOURCE_DIRS -f $DOWNLOADS_DIR/$MPC_TARBALL
-tar x -C $SOURCE_DIRS -f $DOWNLOADS_DIR/$ISL_TARBALL
-tar x -C $SOURCE_DIRS -f $DOWNLOADS_DIR/$CLOOG_TARBALL
+tar x -C $SOURCE_DIR -f $DOWNLOADS_DIR/$GMP_TARBALL
+tar x -C $SOURCE_DIR -f $DOWNLOADS_DIR/$MPFR_TARBALL
+tar x -C $SOURCE_DIR -f $DOWNLOADS_DIR/$MPC_TARBALL
+tar x -C $SOURCE_DIR -f $DOWNLOADS_DIR/$ISL_TARBALL
+tar x -C $SOURCE_DIR -f $DOWNLOADS_DIR/$CLOOG_TARBALL
 
 echo "@@@ [gcc/bootstrap] linking GCC dependencies into GCC source directory ..."
 
@@ -252,7 +252,7 @@ ln -s $CLOOG_SOURCE_DIR $GCC_SOURCE_DIR/cloog
 
 echo "@@@ [gcc/bootstrap] emitting configure help ..."
 
-$GCC_SOURCE_DIR/configure --help > $HERE/ConfigureHelp_gcc.txt
+$GCC_SOURCE_DIR/configure --help > $BUILD_DIR/ConfigureHelp_gcc.txt
 
 echo "@@@ [gcc/bootstrap] configuring in new build directory ..."
 
@@ -270,17 +270,17 @@ make install-gcc
 
 echo "@@@ [gcc/bootstrap] creating rootdir index ..."
 
-find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $HERE/md5_after_gcc_bootstrap
+find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $BUILD_DIR/md5_after_gcc_bootstrap
 
 ######################################## build newlib
 
 echo "@@@ [newlib] unpacking source ..."
 
-tar x -C $SOURCE_DIRS -f $DOWNLOADS_DIR/$NEWLIB_TARBALL
+tar x -C $SOURCE_DIR -f $DOWNLOADS_DIR/$NEWLIB_TARBALL
 
 echo "@@@ [newlib] emitting configure help ..."
 
-$NEWLIB_SOURCE_DIR/configure --help > $HERE/ConfigureHelp_newlib.txt
+$NEWLIB_SOURCE_DIR/configure --help > $BUILD_DIR/ConfigureHelp_newlib.txt
 
 echo "@@@ [newlib] configuring in new build directory ..."
 
@@ -307,7 +307,7 @@ make install
 
 echo "@@@ [newlib] creating rootdir index ..."
 
-find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $HERE/md5_after_newlib
+find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $BUILD_DIR/md5_after_newlib
 
 ######################################## build gcc/full
 
@@ -327,17 +327,17 @@ make install
 
 echo "@@@ [gcc/full] creating rootdir index ..."
 
-find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $HERE/md5_after_gcc_full
+find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $BUILD_DIR/md5_after_gcc_full
 
 ######################################## build gdb
 
 echo "@@@ [gdb] unpacking source ..."
 
-tar x -C $SOURCE_DIRS -f $DOWNLOADS_DIR/$GDB_TARBALL
+tar x -C $SOURCE_DIR -f $DOWNLOADS_DIR/$GDB_TARBALL
 
 echo "@@@ [gdb] emitting configure help ..."
 
-$NEWLIB_SOURCE_DIR/configure --help > $HERE/ConfigureHelp_gdb.txt
+$NEWLIB_SOURCE_DIR/configure --help > $BUILD_DIR/ConfigureHelp_gdb.txt
 
 echo "@@@ [gdb] configuring in new build directory ..."
 
@@ -355,7 +355,7 @@ make install
 
 echo "@@@ [gdb] creating rootdir index ..."
 
-find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $HERE/md5_after_gdb
+find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $BUILD_DIR/md5_after_gdb
 
 ######################################## all done
 
