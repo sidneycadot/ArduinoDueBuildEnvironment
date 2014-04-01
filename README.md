@@ -39,6 +39,7 @@ Current versions (March 2014):
 | CLoog                    | 0.18.1  | http://www.cloog.org/                                | downloaded as GCC dependency, but not yet used. |
 | NewLib                   | 2.1.0   | http://sourceware.org/newlib/                        | downloaded and built.                           |
 | uClibc                   | 0.9.33  | http://www.uclibc.org/                               | downloaded but not yet built.                   |
+| glibc                    | 2.19    | http://www.gnu.org/software/libc/libc.html           |                                                 |
 | Atmel Software Framework | 3.15    | http://www.atmel.com/tools/avrsoftwareframework.aspx | downloaded.                                     |
 | GDB                      | 7.7     | http://www.sourceware.org/gdb/                       | downloaded and built.                           |
 | Bossac                   | 1.2.1   | http://www.shumatech.com/web/products/bossa          | not downloaded.                                 |
