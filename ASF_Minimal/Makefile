@@ -1,7 +1,7 @@
 
 .PHONY : default program clean
 
-ASF_DIR = ../xdk-asf-3.15.0
+ASF_DIR = ../xdk-asf-3.26.0
 
 TOOLCHAIN_BIN_DIR=../root/bin
 TOOLCHAIN_PROGRAM_PREFIX=arm-none-eabi-
