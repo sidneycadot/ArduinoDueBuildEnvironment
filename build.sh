@@ -5,20 +5,22 @@ set -e
 HERE=$PWD
 
 ######################################## set up basic variables
+#
+# ftp://sourceware.org/pub/newlib/newlib-2.3.0.20160104.tar.gz
 
-BINUTILS_VERSION=2.25
-GCC_VERSION=5.2.0
-GMP_VERSION=6.0.0a
+BINUTILS_VERSION=2.26
+GCC_VERSION=5.3.0
+GMP_VERSION=6.1.0
 MPFR_VERSION=3.1.3
 MPC_VERSION=1.0.3
-ISL_VERSION=0.14
+ISL_VERSION=0.16.1
 CLOOG_VERSION=0.18.4
-NEWLIB_VERSION=2.2.0
-UCLIBC_VERSION=0.9.33.2
-GLIBC_VERSION=2.22
+NEWLIB_VERSION=2.3.0.20160104
+ASF_VERSION=3.29.0
 GDB_VERSION=7.10
-FREERTOS_VERSION=8.2.2
-ASF_VERSION=3.26.0.23
+#UCLIBC_VERSION=0.9.33.2
+#GLIBC_VERSION=2.22
+#FREERTOS_VERSION=8.2.2
 
 # Note: ISL version 0.15 doesn't currently seem to be compatible with GCC!
 # ISL versions supposedly supported by GCC: 0.12.2, 0.13, 0.14, 0.15
@@ -31,10 +33,10 @@ MPC_DIRNAME=mpc-${MPC_VERSION}
 ISL_DIRNAME=isl-${ISL_VERSION}
 CLOOG_DIRNAME=cloog-${CLOOG_VERSION}
 NEWLIB_DIRNAME=newlib-${NEWLIB_VERSION}
-UCLIBC_DIRNAME=uClibc-${UCLIBC_VERSION}
-GLIBC_DIRNAME=glibc-${GLIBC_VERSION}
 GDB_DIRNAME=gdb-${GDB_VERSION}
-FREERTOS_DIRNAME=FreeRTOSv${FREERTOS_VERSION}
+#UCLIBC_DIRNAME=uClibc-${UCLIBC_VERSION}
+#GLIBC_DIRNAME=glibc-${GLIBC_VERSION}
+#FREERTOS_DIRNAME=FreeRTOSv${FREERTOS_VERSION}
 
 # NOTE: we don't define ASF_DIRNAME.
 # ASF_ZIPFILE unpacks to a directory called "xdk-asf-${ASF_VERSION}".
@@ -47,11 +49,11 @@ MPC_TARBALL=${MPC_DIRNAME}.tar.gz
 ISL_TARBALL=${ISL_DIRNAME}.tar.xz
 CLOOG_TARBALL=${CLOOG_DIRNAME}.tar.gz
 NEWLIB_TARBALL=${NEWLIB_DIRNAME}.tar.gz
-UCLIBC_TARBALL=${UCLIBC_DIRNAME}.tar.xz
-GLIBC_TARBALL=${GLIBC_DIRNAME}.tar.xz
-GDB_TARBALL=${GDB_DIRNAME}.tar.xz
-FREERTOS_ZIPFILE=${FREERTOS_DIRNAME}.zip
 ASF_ZIPFILE=asf-standalone-archive-${ASF_VERSION}.zip
+GDB_TARBALL=${GDB_DIRNAME}.tar.xz
+#UCLIBC_TARBALL=${UCLIBC_DIRNAME}.tar.xz
+#GLIBC_TARBALL=${GLIBC_DIRNAME}.tar.xz
+#FREERTOS_ZIPFILE=${FREERTOS_DIRNAME}.zip
 
 BINUTILS_TARBALL_URL=ftp://ftp.gnu.org/gnu/binutils/${BINUTILS_TARBALL}
 GCC_TARBALL_URL=ftp://ftp.gnu.org/gnu/gcc/gcc-${GCC_VERSION}/${GCC_TARBALL}
@@ -61,11 +63,11 @@ MPC_TARBALL_URL=ftp://ftp.gnu.org/gnu/mpc/${MPC_TARBALL}
 ISL_TARBALL_URL=http://isl.gforge.inria.fr/${ISL_TARBALL}
 CLOOG_TARBALL_URL=http://www.bastoul.net/cloog/pages/download/${CLOOG_TARBALL}
 NEWLIB_TARBALL_URL=ftp://sourceware.org/pub/newlib/${NEWLIB_TARBALL}
-UCLIBC_TARBALL_URL=http://www.uclibc.org/downloads/${UCLIBC_TARBALL}
-GLIBC_TARBALL_URL=ftp://ftp.gnu.org/gnu/glibc/${GLIBC_TARBALL}
-GDB_TARBALL_URL=ftp://ftp.gnu.org/gnu/gdb/${GDB_TARBALL}
-FREERTOS_ZIPFILE_URL=http://freefr.dl.sourceforge.net/project/freertos/FreeRTOS/V${FREERTOS_VERSION}/${FREERTOS_ZIPFILE}
 ASF_ZIPFILE_URL=http://www.atmel.com/images/${ASF_ZIPFILE}
+GDB_TARBALL_URL=ftp://ftp.gnu.org/gnu/gdb/${GDB_TARBALL}
+#UCLIBC_TARBALL_URL=http://www.uclibc.org/downloads/${UCLIBC_TARBALL}
+#GLIBC_TARBALL_URL=ftp://ftp.gnu.org/gnu/glibc/${GLIBC_TARBALL}
+#FREERTOS_ZIPFILE_URL=http://freefr.dl.sourceforge.net/project/freertos/FreeRTOS/V${FREERTOS_VERSION}/${FREERTOS_ZIPFILE}
 
 ######################################## set up directories
 
@@ -166,13 +168,13 @@ if [ ! -f ${NEWLIB_TARBALL} ] ; then
     wget ${NEWLIB_TARBALL_URL}
 fi
 
-if [ ! -f ${UCLIBC_TARBALL} ] ; then
-    wget ${UCLIBC_TARBALL_URL}
-fi
+#if [ ! -f ${UCLIBC_TARBALL} ] ; then
+#    wget ${UCLIBC_TARBALL_URL}
+#fi
 
-if [ ! -f ${GLIBC_TARBALL} ] ; then
-    wget ${GLIBC_TARBALL_URL}
-fi
+#if [ ! -f ${GLIBC_TARBALL} ] ; then
+#    wget ${GLIBC_TARBALL_URL}
+#fi
 
 # GDB
 
@@ -188,9 +190,9 @@ fi
 
 # FreeRTOS
 
-if [ ! -f ${FREERTOS_ZIPFILE} ] ; then
-    wget ${FREERTOS_ZIPFILE_URL}
-fi
+#if [ ! -f ${FREERTOS_ZIPFILE} ] ; then
+#    wget ${FREERTOS_ZIPFILE_URL}
+#fi
 
 # Flash utility: bossa
 

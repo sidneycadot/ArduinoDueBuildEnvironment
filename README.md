@@ -26,29 +26,34 @@ Goals
 Versions
 --------
 
-Current versions (4 September 2015):
+Current versions (25 January 2016):
 
 | tool / library           | version   | project url                                          | status                                          |
 ---------------------------|-----------|------------------------------------------------------|------------------------------------------------ |
-| Binutils                 | 2.25      | http://www.gnu.org/software/binutils/                | downloaded and built.                           |
-| GCC                      | 5.2.0     | http://gcc.gnu.org/                                  | downloaded and built.                           |
-| GMP                      | 6.0.0a    | https://gmplib.org/                                  | downloaded as GCC dependency, but not yet used. |
+| Binutils                 | 2.26      | http://www.gnu.org/software/binutils/                | downloaded and built.                           |
+| GCC                      | 5.3.0     | http://gcc.gnu.org/                                  | downloaded and built.                           |
+| GMP                      | 6.1.0     | https://gmplib.org/                                  | downloaded as GCC dependency, but not yet used. |
 | MPFR                     | 3.1.3     | http://www.mpfr.org/                                 | downloaded as GCC dependency, but not yet used. |
 | MPC                      | 1.0.3     | http://www.multiprecision.org/                       | downloaded as GCC dependency, but not yet used. |
-| ISL                      | 0.15      | http://freecode.com/projects/isl                     | downloaded as GCC dependency, but not yet used. |
+| ISL                      | 0.16.1    | http://isl.gforge.inria.fr/                          | downloaded as GCC dependency, but not yet used. |
 | CLoog                    | 0.18.4    | http://www.cloog.org/                                | downloaded as GCC dependency, but not yet used. |
-| NewLib                   | 2.2.0     | http://sourceware.org/newlib/                        | downloaded and built.                           |
-| uClibc                   | 0.9.33.2  | http://www.uclibc.org/                               | downloaded but not yet built.                   |
-| glibc                    | 2.22      | http://www.gnu.org/software/libc/libc.html           |                                                 |
-| Atmel Software Framework | 3.26.0.23 | http://www.atmel.com/tools/avrsoftwareframework.aspx | downloaded.                                     |
-| GDB                      | 7.10      | http://www.gnu.org/software/gdb/                     | downloaded and built.                           |
-| Bossac                   | 1.2.1     | http://www.shumatech.com/web/products/bossa          | not downloaded.                                 |
-| FreeRTOS                 | 8.2.2     | http://www.freertos.org/                             | downloaded, not currently used.                 |
-| Minix                    | 3.3.0     | http://www.minix3.org/                               | planned for future.                             |
+| newlib                   | 2.2.0     | http://sourceware.org/newlib/                        | downloaded and built.                           |
+| Atmel Software Framework | 3.29.0    | http://www.atmel.com/tools/avrsoftwareframework.aspx | downloaded.                                     |
+| GDB                      | 7.10.1    | http://www.gnu.org/software/gdb/                     | downloaded and built.                           |
 
 NOTE: To find the link to the "Atmel Software Framework" you need to register with atmel. You can also try looking at
       [this page](http://spaces.atmel.com/gf/project/asf/frs/?action=&br_pkgrlssort_by=release_name&br_pkgrlssort_order=asc)
       to find the version number of the most recent version, and change the download URL accordingly.
+
+Stuff that isn't used/built yet:
+
+| tool / library           | version   | project url                                          | status                                          |
+---------------------------|-----------|------------------------------------------------------|------------------------------------------------ |
+| uClibc                   | 0.9.33.2  | http://www.uclibc.org/                               | downloaded but not yet built.                   |
+| glibc                    | 2.22      | http://www.gnu.org/software/libc/libc.html           |                                                 |
+| Bossac                   | 1.2.1     | http://www.shumatech.com/web/products/bossa          | not downloaded.                                 |
+| FreeRTOS                 | 8.2.2     | http://www.freertos.org/                             | downloaded, not currently used.                 |
+| Minix                    | 3.3.0     | http://www.minix3.org/                               | planned for future.                             |
 
 Interesting web pages
 ---------------------
