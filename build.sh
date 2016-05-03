@@ -5,19 +5,22 @@ set -e
 HERE=$PWD
 
 ######################################## set up basic variables
+
+# CMSIS:
 #
-# ftp://sourceware.org/pub/newlib/newlib-2.3.0.20160104.tar.gz
+#     https://silver.arm.com/download/Development_Tools/Keil/Keil:_generic/CMSIS-SP-00300-r3p1-00rel0/CMSIS-SP-00300-r3p1-00rel0.zip
+#
+# NOTE: gcc6 does not requite "CLOOOG" anymore.
 
 BINUTILS_VERSION=2.26
-GCC_VERSION=5.3.0
+GCC_VERSION=6.1.0
 GMP_VERSION=6.1.0
-MPFR_VERSION=3.1.3
+MPFR_VERSION=3.1.4
 MPC_VERSION=1.0.3
 ISL_VERSION=0.16.1
-CLOOG_VERSION=0.18.4
-NEWLIB_VERSION=2.3.0.20160104
-ASF_VERSION=3.29.0
-GDB_VERSION=7.10
+NEWLIB_VERSION=2.4.0
+ASF_VERSION=3.31.0
+GDB_VERSION=7.11
 #UCLIBC_VERSION=0.9.33.2
 #GLIBC_VERSION=2.22
 #FREERTOS_VERSION=8.2.2
@@ -31,7 +34,6 @@ GMP_DIRNAME=gmp-${GMP_VERSION}
 MPFR_DIRNAME=mpfr-${MPFR_VERSION}
 MPC_DIRNAME=mpc-${MPC_VERSION}
 ISL_DIRNAME=isl-${ISL_VERSION}
-CLOOG_DIRNAME=cloog-${CLOOG_VERSION}
 NEWLIB_DIRNAME=newlib-${NEWLIB_VERSION}
 GDB_DIRNAME=gdb-${GDB_VERSION}
 #UCLIBC_DIRNAME=uClibc-${UCLIBC_VERSION}
@@ -47,7 +49,6 @@ GMP_TARBALL=${GMP_DIRNAME}.tar.lz
 MPFR_TARBALL=${MPFR_DIRNAME}.tar.xz
 MPC_TARBALL=${MPC_DIRNAME}.tar.gz
 ISL_TARBALL=${ISL_DIRNAME}.tar.xz
-CLOOG_TARBALL=${CLOOG_DIRNAME}.tar.gz
 NEWLIB_TARBALL=${NEWLIB_DIRNAME}.tar.gz
 ASF_ZIPFILE=asf-standalone-archive-${ASF_VERSION}.zip
 GDB_TARBALL=${GDB_DIRNAME}.tar.xz
@@ -61,7 +62,6 @@ GMP_TARBALL_URL=https://gmplib.org/download/gmp/${GMP_TARBALL}
 MPFR_TARBALL_URL=http://www.mpfr.org/mpfr-current/${MPFR_TARBALL}
 MPC_TARBALL_URL=ftp://ftp.gnu.org/gnu/mpc/${MPC_TARBALL}
 ISL_TARBALL_URL=http://isl.gforge.inria.fr/${ISL_TARBALL}
-CLOOG_TARBALL_URL=http://www.bastoul.net/cloog/pages/download/${CLOOG_TARBALL}
 NEWLIB_TARBALL_URL=ftp://sourceware.org/pub/newlib/${NEWLIB_TARBALL}
 ASF_ZIPFILE_URL=http://www.atmel.com/images/${ASF_ZIPFILE}
 GDB_TARBALL_URL=ftp://ftp.gnu.org/gnu/gdb/${GDB_TARBALL}
@@ -69,7 +69,7 @@ GDB_TARBALL_URL=ftp://ftp.gnu.org/gnu/gdb/${GDB_TARBALL}
 #GLIBC_TARBALL_URL=ftp://ftp.gnu.org/gnu/glibc/${GLIBC_TARBALL}
 #FREERTOS_ZIPFILE_URL=http://freefr.dl.sourceforge.net/project/freertos/FreeRTOS/V${FREERTOS_VERSION}/${FREERTOS_ZIPFILE}
 
-######################################## set up directories
+######################################## set up directory environment variables
 
 DOWNLOADS_DIR=${HERE}/downloads
 ROOT_DIR=${HERE}/root
@@ -82,7 +82,6 @@ GMP_SOURCE_DIR=${SOURCE_DIR}/${GMP_DIRNAME}
 MPFR_SOURCE_DIR=${SOURCE_DIR}/${MPFR_DIRNAME}
 MPC_SOURCE_DIR=${SOURCE_DIR}/${MPC_DIRNAME}
 ISL_SOURCE_DIR=${SOURCE_DIR}/${ISL_DIRNAME}
-CLOOG_SOURCE_DIR=${SOURCE_DIR}/${CLOOG_DIRNAME}
 NEWLIB_SOURCE_DIR=${SOURCE_DIR}/${NEWLIB_DIRNAME}
 GDB_SOURCE_DIR=${SOURCE_DIR}/${GDB_DIRNAME}
 
@@ -158,10 +157,6 @@ if [ ! -f ${ISL_TARBALL} ] ; then
     wget ${ISL_TARBALL_URL}
 fi
 
-if [ ! -f ${CLOOG_TARBALL} ] ; then
-    wget ${CLOOG_TARBALL_URL}
-fi
-
 # C libraries
 
 if [ ! -f ${NEWLIB_TARBALL} ] ; then
@@ -182,7 +177,7 @@ if [ ! -f ${GDB_TARBALL} ] ; then
     wget ${GDB_TARBALL_URL}
 fi
 
-# ASF
+# Atmel Software Framework
 
 if [ ! -f ${ASF_ZIPFILE} ] ; then
     wget ${ASF_ZIPFILE_URL}
@@ -194,7 +189,7 @@ fi
 #    wget ${FREERTOS_ZIPFILE_URL}
 #fi
 
-# Flash utility: bossa
+# Flash utility: bossa, OpenOCD
 
 # Minix
 
@@ -203,6 +198,10 @@ fi
 echo
 md5sum *
 echo
+
+# Return to toplevel directory.
+
+cd ${HERE}
 
 ######################################## build binutils
 
@@ -234,7 +233,7 @@ find ${ROOT_DIR} -type f -print0 | xargs -0 md5sum > ${BUILD_DIR}/md5_after_binu
 
 ######################################## build gcc/bootstrap
 
-# Note that building the toolchain depends on the availability of a C library
+# Note that building the toolchain depends on the availability of a C library; but the C library must be built with a compiler.
 # To solve this, we perform these steps:
 #
 # (1) Build the gcc compiler partially (good enough to be able to build newlib) -- a "gcc bootstrap" build.
@@ -251,7 +250,6 @@ tar x -C ${SOURCE_DIR} -f ${DOWNLOADS_DIR}/${GMP_TARBALL}
 tar x -C ${SOURCE_DIR} -f ${DOWNLOADS_DIR}/${MPFR_TARBALL}
 tar x -C ${SOURCE_DIR} -f ${DOWNLOADS_DIR}/${MPC_TARBALL}
 tar x -C ${SOURCE_DIR} -f ${DOWNLOADS_DIR}/${ISL_TARBALL}
-tar x -C ${SOURCE_DIR} -f ${DOWNLOADS_DIR}/${CLOOG_TARBALL}
 
 echo "@@@ [gcc/bootstrap] linking GCC dependencies into GCC source directory ..."
 
@@ -262,7 +260,6 @@ ln -s ${GMP_SOURCE_DIR}   ${GCC_SOURCE_DIR}/gmp
 ln -s ${MPFR_SOURCE_DIR}  ${GCC_SOURCE_DIR}/mpfr
 ln -s ${MPC_SOURCE_DIR}   ${GCC_SOURCE_DIR}/mpc
 ln -s ${ISL_SOURCE_DIR}   ${GCC_SOURCE_DIR}/isl
-ln -s ${CLOOG_SOURCE_DIR} ${GCC_SOURCE_DIR}/cloog
 
 echo "@@@ [gcc/bootstrap] emitting configure help ..."
 
