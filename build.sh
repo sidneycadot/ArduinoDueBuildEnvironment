@@ -19,8 +19,8 @@ MPFR_VERSION=3.1.4
 MPC_VERSION=1.0.3
 ISL_VERSION=0.16.1
 NEWLIB_VERSION=2.4.0
-ASF_VERSION=3.31.0
 GDB_VERSION=7.11
+ASF_VERSION=3.31.0.46
 #UCLIBC_VERSION=0.9.33.2
 #GLIBC_VERSION=2.22
 #FREERTOS_VERSION=8.2.2
@@ -50,8 +50,8 @@ MPFR_TARBALL=${MPFR_DIRNAME}.tar.xz
 MPC_TARBALL=${MPC_DIRNAME}.tar.gz
 ISL_TARBALL=${ISL_DIRNAME}.tar.xz
 NEWLIB_TARBALL=${NEWLIB_DIRNAME}.tar.gz
-ASF_ZIPFILE=asf-standalone-archive-${ASF_VERSION}.zip
 GDB_TARBALL=${GDB_DIRNAME}.tar.xz
+ASF_ZIPFILE=asf-standalone-archive-${ASF_VERSION}.zip
 #UCLIBC_TARBALL=${UCLIBC_DIRNAME}.tar.xz
 #GLIBC_TARBALL=${GLIBC_DIRNAME}.tar.xz
 #FREERTOS_ZIPFILE=${FREERTOS_DIRNAME}.zip
@@ -63,8 +63,8 @@ MPFR_TARBALL_URL=http://www.mpfr.org/mpfr-current/${MPFR_TARBALL}
 MPC_TARBALL_URL=ftp://ftp.gnu.org/gnu/mpc/${MPC_TARBALL}
 ISL_TARBALL_URL=http://isl.gforge.inria.fr/${ISL_TARBALL}
 NEWLIB_TARBALL_URL=ftp://sourceware.org/pub/newlib/${NEWLIB_TARBALL}
-ASF_ZIPFILE_URL=http://www.atmel.com/images/${ASF_ZIPFILE}
 GDB_TARBALL_URL=ftp://ftp.gnu.org/gnu/gdb/${GDB_TARBALL}
+ASF_ZIPFILE_URL=http://www.atmel.com/images/${ASF_ZIPFILE}
 #UCLIBC_TARBALL_URL=http://www.uclibc.org/downloads/${UCLIBC_TARBALL}
 #GLIBC_TARBALL_URL=ftp://ftp.gnu.org/gnu/glibc/${GLIBC_TARBALL}
 #FREERTOS_ZIPFILE_URL=http://freefr.dl.sourceforge.net/project/freertos/FreeRTOS/V${FREERTOS_VERSION}/${FREERTOS_ZIPFILE}
@@ -177,7 +177,7 @@ if [ ! -f ${GDB_TARBALL} ] ; then
     wget ${GDB_TARBALL_URL}
 fi
 
-# Atmel Software Framework
+# Atmel Software Framework (ASF)
 
 if [ ! -f ${ASF_ZIPFILE} ] ; then
     wget ${ASF_ZIPFILE_URL}
@@ -299,7 +299,7 @@ echo "@@@ [newlib] configuring in new build directory ..."
 # no easy way to override this.
 #
 # We use the "--disable-newlib-supplied-syscalls" to omit the 17 stub 'syscalls' provided by newlib.
-# Better alternatives are provided by the Atmel Software Framework (ASF).
+# Better(?) alternatives are provided by the Atmel Software Framework (ASF).
 
 # We add to PATH, to make sure that the newlib configure script finds the just-installed GCC bootstrap compiler.
 export PATH=$ROOT_DIR/bin:$PATH

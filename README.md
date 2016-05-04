@@ -28,7 +28,7 @@ We try to support the following features:
 1. A working cross-compiler GCC build environment for ARM-based development.
 2. A working newlib or other small C library
 3. Support for the FPU in the Cortex M4 processor.
-4. The appropriate CMSIS stuff for the ARM chip
+4. The appropriate CMSIS / ASF stuff for the ARM chip
 5. A working FreeRTOS or other minimalistic OS.
 6. Flash tool (BOSSA or OpenOCD)
 7. Working C++, STL
