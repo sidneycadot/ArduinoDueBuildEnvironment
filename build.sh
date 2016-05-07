@@ -1,8 +1,13 @@
-#! /bin/sh
+#! /bin/bash
 
 set -e
 
 HERE=$PWD
+
+function message()
+{
+    echo -e "\033[0;31m==========> [$1] $2\033[0m"
+}
 
 ######################################## set up basic variables
 
@@ -10,7 +15,7 @@ HERE=$PWD
 #
 #     https://silver.arm.com/download/Development_Tools/Keil/Keil:_generic/CMSIS-SP-00300-r3p1-00rel0/CMSIS-SP-00300-r3p1-00rel0.zip
 #
-# NOTE: gcc6 does not requite "CLOOOG" anymore.
+# NOTE: gcc6 does not require "CLOOOG" anymore.
 
 BINUTILS_VERSION=2.26
 GCC_VERSION=6.1.0
@@ -24,9 +29,6 @@ ASF_VERSION=3.31.0.46
 #UCLIBC_VERSION=0.9.33.2
 #GLIBC_VERSION=2.22
 #FREERTOS_VERSION=8.2.2
-
-# Note: ISL version 0.15 doesn't currently seem to be compatible with GCC!
-# ISL versions supposedly supported by GCC: 0.12.2, 0.13, 0.14, 0.15
 
 BINUTILS_DIRNAME=binutils-${BINUTILS_VERSION}
 GCC_DIRNAME=gcc-${GCC_VERSION}
@@ -103,7 +105,7 @@ MAKE_OPTS="-j8"
 
 ########################################
 
-echo "@@@ [all] removing stale directories ..."
+message "all" "removing stale directories ..."
 
 rm -rf ${SOURCE_DIR}
 rm -rf ${BUILD_DIR}
@@ -111,7 +113,7 @@ rm -rf ${ROOT_DIR}
 
 ########################################
 
-echo "@@@ [all] setting up fresh directories ..."
+message "all" "setting up fresh directories ..."
 
 mkdir ${SOURCE_DIR}
 mkdir ${BUILD_DIR}
@@ -123,7 +125,7 @@ fi
 
 ########################################
 
-echo "@@@ [all] fetching tarballs ..."
+message "all" "fetching tarballs ..."
 
 cd ${DOWNLOADS_DIR}
 
@@ -205,29 +207,29 @@ cd ${HERE}
 
 ######################################## build binutils
 
-echo "@@@ [binutils] unpacking source ..."
+message "binutils" "unpacking source ..."
 
 tar x -C ${SOURCE_DIR} -f ${DOWNLOADS_DIR}/${BINUTILS_TARBALL}
 
-echo "@@@ [binutils] emitting configure help ..."
+message "binutils" "emitting configure help ..."
 
 ${BINUTILS_SOURCE_DIR}/configure --help > ${BUILD_DIR}/ConfigureHelp_binutils.txt
 
-echo "@@@ [binutils] configuring in new build directory ..."
+message "binutils" "configuring in new build directory ..."
 
 mkdir ${BINUTILS_BUILD_DIR} && cd ${BINUTILS_BUILD_DIR}
 
 ${BINUTILS_SOURCE_DIR}/configure --prefix=${ROOT_DIR} --program-prefix=${PROGRAM_PREFIX} --target=${TARGET}
 
-echo "@@@ [binutils] making ..."
+message "binutils" "making ..."
 
 make ${MAKE_OPTS}
 
-echo "@@@ [binutils] installing ..."
+message "binutils" "installing ..."
 
 make install
 
-echo "@@@ [binutils] creating rootdir index ..."
+message "binutils" "creating rootdir index ..."
 
 find ${ROOT_DIR} -type f -print0 | xargs -0 md5sum > ${BUILD_DIR}/md5_after_binutils
 
@@ -240,18 +242,18 @@ find ${ROOT_DIR} -type f -print0 | xargs -0 md5sum > ${BUILD_DIR}/md5_after_binu
 # (2) Build newlib using the bootstrap compiler.
 # (3) Build a full gcc.
 
-echo "@@@ [gcc/bootstrap] unpacking source ..."
+message "gcc/bootstrap" "unpacking source ..."
 
 tar x -C ${SOURCE_DIR} -f ${DOWNLOADS_DIR}/${GCC_TARBALL}
 
-echo "@@@ [gcc/bootstrap] unpacking source of GCC dependencies ..."
+message "gcc/bootstrap" "unpacking source of GCC dependencies ..."
 
 tar x -C ${SOURCE_DIR} -f ${DOWNLOADS_DIR}/${GMP_TARBALL}
 tar x -C ${SOURCE_DIR} -f ${DOWNLOADS_DIR}/${MPFR_TARBALL}
 tar x -C ${SOURCE_DIR} -f ${DOWNLOADS_DIR}/${MPC_TARBALL}
 tar x -C ${SOURCE_DIR} -f ${DOWNLOADS_DIR}/${ISL_TARBALL}
 
-echo "@@@ [gcc/bootstrap] linking GCC dependencies into GCC source directory ..."
+message "gcc/bootstrap" "linking GCC dependencies into GCC source directory ..."
 
 # Linking these into the GCC directory with the names given will instruct GCC to use them for its own build.
 # See http://gcc.gnu.org/install/prerequisites.html
@@ -261,39 +263,39 @@ ln -s ${MPFR_SOURCE_DIR}  ${GCC_SOURCE_DIR}/mpfr
 ln -s ${MPC_SOURCE_DIR}   ${GCC_SOURCE_DIR}/mpc
 ln -s ${ISL_SOURCE_DIR}   ${GCC_SOURCE_DIR}/isl
 
-echo "@@@ [gcc/bootstrap] emitting configure help ..."
+message "gcc/bootstrap" "emitting configure help ..."
 
 ${GCC_SOURCE_DIR}/configure --help > ${BUILD_DIR}/ConfigureHelp_gcc.txt
 
-echo "@@@ [gcc/bootstrap] configuring in new build directory ..."
+message "gcc/bootstrap" "configuring in new build directory ..."
 
 mkdir ${GCC_BOOTSTRAP_BUILD_DIR} && cd ${GCC_BOOTSTRAP_BUILD_DIR}
 
 ${GCC_SOURCE_DIR}/configure --target=${TARGET} --prefix=${ROOT_DIR} --program-prefix=${PROGRAM_PREFIX} --enable-languages=c,c++ --without-headers --with-newlib --with-gnu-as --with-gnu-ld
 
-echo "@@@ [gcc/bootstrap] making ..."
+message "gcc/bootstrap" "making ..."
 
 make ${MAKE_OPTS} all-gcc
 
-echo "@@@ [gcc/bootstrap] installing ..."
+message "gcc/bootstrap" "installing ..."
 
 make install-gcc
 
-echo "@@@ [gcc/bootstrap] creating rootdir index ..."
+message "gcc/bootstrap" "creating rootdir index ..."
 
 find ${ROOT_DIR} -type f -print0 | xargs -0 md5sum > ${BUILD_DIR}/md5_after_gcc_bootstrap
 
 ######################################## build newlib using the bootstrap GCC
 
-echo "@@@ [newlib] unpacking source ..."
+message "newlib" "unpacking source ..."
 
 tar x -C $SOURCE_DIR -f $DOWNLOADS_DIR/$NEWLIB_TARBALL
 
-echo "@@@ [newlib] emitting configure help ..."
+message "newlib" "emitting configure help ..."
 
 $NEWLIB_SOURCE_DIR/configure --help > $BUILD_DIR/ConfigureHelp_newlib.txt
 
-echo "@@@ [newlib] configuring in new build directory ..."
+message "newlib" "configuring in new build directory ..."
 
 # Note that newlib expects the toolchain commands to be named arm-eabi-name-<toolname>, and there is
 # no easy way to override this.
@@ -308,67 +310,67 @@ mkdir $NEWLIB_BUILD_DIR && cd $NEWLIB_BUILD_DIR
 
 $NEWLIB_SOURCE_DIR/configure --target=$TARGET --prefix=$ROOT_DIR --disable-newlib-supplied-syscalls
 
-echo "@@@ [newlib] making ..."
+message "newlib" "making ..."
 
 make all $MAKE_OPTS
 
-echo "@@@ [newlib] installing ..."
+message "newlib" "installing ..."
 
 make install
 
-echo "@@@ [newlib] creating rootdir index ..."
+message "newlib" "creating rootdir index ..."
 
 find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $BUILD_DIR/md5_after_newlib
 
 ######################################## build gcc/full
 
-echo "@@@ [gcc/full] configuring in new build directory ..."
+message "gcc/full" "configuring in new build directory ..."
 
 mkdir $GCC_FULL_BUILD_DIR && cd $GCC_FULL_BUILD_DIR
 
 $GCC_SOURCE_DIR/configure --target=$TARGET --prefix=$ROOT_DIR --program-prefix=$PROGRAM_PREFIX --enable-languages=c,c++ --with-newlib --with-gnu-as --with-gnu-ld --disable-shared --disable-libssp
 
-echo "@@@ [gcc/full] making ..."
+message "gcc/full" "making ..."
 
 make $MAKE_OPTS all
 
-echo "@@@ [gcc/full] installing ..."
+message "gcc/full" "installing ..."
 
 make install
 
-echo "@@@ [gcc/full] creating rootdir index ..."
+message "gcc/full" "creating rootdir index ..."
 
 find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $BUILD_DIR/md5_after_gcc_full
 
 ######################################## build gdb
 
-echo "@@@ [gdb] unpacking source ..."
+message "gdb" "unpacking source ..."
 
 tar x -C $SOURCE_DIR -f $DOWNLOADS_DIR/$GDB_TARBALL
 
-echo "@@@ [gdb] emitting configure help ..."
+message "gdb" "emitting configure help ..."
 
 $NEWLIB_SOURCE_DIR/configure --help > $BUILD_DIR/ConfigureHelp_gdb.txt
 
-echo "@@@ [gdb] configuring in new build directory ..."
+message "gdb" "configuring in new build directory ..."
 
 mkdir $GDB_BUILD_DIR && cd $GDB_BUILD_DIR
 
 $GDB_SOURCE_DIR/configure --target=$TARGET --prefix=$ROOT_DIR --program-prefix=$PROGRAM_PREFIX
 
-echo "@@@ [gdb] making ..."
+message "gdb" "making ..."
 
 make $MAKE_OPTS all
 
-echo "@@@ [gdb] installing ..."
+message "gdb" "installing ..."
 
 make install
 
-echo "@@@ [gdb] creating rootdir index ..."
+message "gdb" "creating rootdir index ..."
 
 find $ROOT_DIR -type f -print0 | xargs -0 md5sum > $BUILD_DIR/md5_after_gdb
 
 ######################################## all done
 
 echo
-echo "@@@ all done!"
+message "all" "done!"
