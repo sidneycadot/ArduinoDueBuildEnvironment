@@ -39,18 +39,18 @@ Software versions
 
 Current versions (30 April 2016):
 
-| tool / library           | version   | project url                                          | status                                          |
-|--------------------------|-----------|------------------------------------------------------|-------------------------------------------------|
-| Binutils                 | 2.26      | http://www.gnu.org/software/binutils/                | ok                                              |
-| GCC                      | 6.1.0     | http://gcc.gnu.org/                                  | ok                                              |
-| GMP                      | 6.1.0     | https://gmplib.org/                                  | ok                                              |
-| MPFR                     | 3.1.4     | http://www.mpfr.org/                                 | ok                                              |
-| MPC                      | 1.0.3     | http://www.multiprecision.org/                       | ok                                              |
-| ISL                      | 0.16.1    | http://isl.gforge.inria.fr/                          | ok                                              |
-| CLoog                    | 0.18.4    | http://www.cloog.org/                                | (no longer needed)                              |
-| newlib                   | 2.4.0     | http://sourceware.org/newlib/                        | ok                                              |
-| Atmel Software Framework | 3.31.0    | http://www.atmel.com/tools/avrsoftwareframework.aspx | ok                                              |
-| GDB                      | 7.11      | http://www.gnu.org/software/gdb/                     | ok                                              |
+| tool / library           | version        | project url                                          | status                                          |
+|--------------------------|----------------|------------------------------------------------------|-------------------------------------------------|
+| Binutils                 | 2.27           | http://www.gnu.org/software/binutils/                | ok                                              |
+| GCC                      | 6.2.0          | http://gcc.gnu.org/                                  | ok                                              |
+| GMP                      | 6.1.1          | https://gmplib.org/                                  | ok                                              |
+| MPFR                     | 3.1.4          | http://www.mpfr.org/                                 | ok                                              |
+| MPC                      | 1.0.3          | http://www.multiprecision.org/                       | ok                                              |
+| ISL                      | 0.17.1         | http://isl.gforge.inria.fr/                          | ok                                              |
+| CLoog                    | 0.18.4         | http://www.cloog.org/                                | (no longer needed)                              |
+| newlib                   | 2.4.0.20160527 | http://sourceware.org/newlib/                        | ok                                              |
+| Atmel Software Framework | 3.32.0.48      | http://www.atmel.com/tools/avrsoftwareframework.aspx | ok                                              |
+| GDB                      | 7.11.1         | http://www.gnu.org/software/gdb/                     | ok                                              |
 
 NOTE: To find the link to the "Atmel Software Framework" you need to register with atmel. You can also try looking at
       [this page](http://spaces.atmel.com/gf/project/asf/frs/?action=&br_pkgrlssort_by=release_name&br_pkgrlssort_order=asc)
